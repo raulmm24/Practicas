@@ -10,27 +10,22 @@ public class GestorTrabajadores {
     private static final String user = "root";
     private static final String password = "774411";
 
-    private static final String creaDepartamento =
-            "CREATE TABLE departamento ("
-                    + "id_dpto INT PRIMARY KEY AUTO_INCREMENT,"
-                    + "nombre VARCHAR(100) NOT NULL,"
-                    + "localizacion VARCHAR(100) NOT NULL"
+    private static final String creaValoracion =
+            "CREATE TABLE valoracion ("
+                    + "id_valoracion INT PRIMARY KEY AUTO_INCREMENT,"
+                    + "valoracion DECIMAL(5,2) NOT NULL,"
+                    + "nota_trabajador VARCHAR(255) NOT NULL,"
+                    + "fecha DATE NOT NULL,"
+                    + "id_trabajador INT NOT NULL,"
+                    + "FOREIGN KEY (id_trabajador) REFERENCES trabajador(id_empleado)"
                     + ")";
 
-    private static final String creaTrabajador =
-            "CREATE TABLE trabajador ("
-                    + "id_empleado INT PRIMARY KEY AUTO_INCREMENT,"
-                    +  "nombre VARCHAR(100) NOT NULL,"
-                    +  "departamento INT,"
-                    +  "fecha_alta DATE NOT NULL"
-                    + ")";
-
-    private static final String insertaDepartamento =
-            "INSERT INTO departamento (nombre, localizacion) VALUES "
-                    + "('Programación', 'Ecija'),"
-                    + "('Finanzas', 'Guadaira'),"
-                    + "('Marketing', 'Ecija'),"
-                    + "('Informática', 'Guadaira')";
+    private static final String insertaValoracion =
+            "INSERT INTO valoracion (valoracion, nota_trabajador, fecha, id_trabajador) VALUES "
+                    + "(8.50, 'Muy buen desempeño general.', '2024-06-01', 1),"
+                    + "(9.20, 'Excelente capacidad analítica.', '2024-06-03', 2),"
+                    + "(7.30, 'Creativa pero debe mejorar la puntualidad.', '2024-06-05', 3),"
+                    + "(8.90, 'Proactivo y con buena actitud.', '2024-06-07', 4)";
 
     public static void main(String[] args) {
 
@@ -41,10 +36,13 @@ public class GestorTrabajadores {
             Class.forName("com.mysql.cj.jdbc.Driver");
             conexion = DriverManager.getConnection(url, user, password);
             sentencia = conexion.createStatement();
-            sentencia.execute(creaDepartamento);
-            System.out.println("Tabla 'departamento' creada correctamente");
-            sentencia.execute(insertaDepartamento);
-            System.out.println("Nuevos departamentos insertados correctamente");
+
+            sentencia.execute(creaValoracion);
+            System.out.println("Tabla 'valoracion' creada correctamente.");
+
+            sentencia.execute(insertaValoracion);
+            System.out.println("Valoraciones insertadas correctamente.");
+
         } catch (Exception e) {
             System.err.println(e);
         } finally {
