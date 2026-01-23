@@ -25,15 +25,22 @@ public class Consultas {
             sentencia = conexion.createStatement();
             result = sentencia.executeQuery(consulta);
 
+            System.out.printf("%-5s %-18s %-18s %-12s %-8s %-60s%n",
+                    "ID", "Nombre", "Departamento", "Fecha", "Nota", "Nota_Trabajador");
+
+            System.out.println("---------------------------------------------------------------------------------------------------------------");
+
             while (result.next()) {
-                System.out.printf("%2d %-15s %-15s %s %-5.2f %s\n",
+                System.out.printf("%-5d %-18s %-18s %-12s %-8.2f %-60s%n",
                         result.getInt("id_empleado"),
                         result.getString("nombre"),
                         result.getString("nombre_departamento"),
-                        result.getDate("fecha_alta"),
+                        result.getDate("fecha_alta").toString(),
                         result.getDouble("valoracion"),
                         result.getString("nota_trabajador"));
+                System.out.println("---------------------------------------------------------------------------------------------------------------");
             }
+
 
             System.out.println("\nTabla 'trabajador' consultada correctamente");
 
