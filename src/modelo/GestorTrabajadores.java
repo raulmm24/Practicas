@@ -11,22 +11,21 @@ public class GestorTrabajadores {
     private static final String user = "root";
     private static final String password = "774411";
 
-    private static final String creaValoracion =
-            "CREATE TABLE valoracion ("
-                    + "id_valoracion INT PRIMARY KEY AUTO_INCREMENT,"
-                    + "valoracion DECIMAL(5,2) NOT NULL,"
-                    + "nota_trabajador VARCHAR(255) NOT NULL,"
-                    + "fecha DATE NOT NULL,"
-                    + "id_trabajador INT NOT NULL,"
-                    + "FOREIGN KEY (id_trabajador) REFERENCES trabajador(id_empleado)"
-                    + ")";
+    private static final String creaTrabajador =
+            "CREATE TABLE IF NOT EXISTS trabajador (" +
+                    "id_empleado INT PRIMARY KEY AUTO_INCREMENT, " +
+                    "nombre VARCHAR(100) NOT NULL, " +
+                    "departamento INT, " +
+                    "fecha_alta DATE NOT NULL" +
+                    ");";
 
-    private static final String insertaValoracion =
-            "INSERT INTO valoracion (valoracion, nota_trabajador, fecha, id_trabajador) VALUES "
-                    + "(8.50, 'Muy buen desempeño general.', '2024-06-01', 1),"
-                    + "(9.20, 'Excelente capacidad analítica.', '2024-06-03', 2),"
-                    + "(7.30, 'Creativa pero debe mejorar la puntualidad.', '2024-06-05', 3),"
-                    + "(8.90, 'Proactivo y con buena actitud.', '2024-06-07', 4)";
+    private static final String insertaTrabajador =
+            "INSERT INTO trabajador (nombre, departamento, fecha_alta) VALUES " +
+                    "('Ana López', 1, '2024-01-10'), " +
+                    "('Carlos Pérez', 2, '2024-02-15'), " +
+                    "('María Gómez', 3, '2024-03-01'), " +
+                    "('Javier Ruiz', 1, '2024-04-20'), " +
+                    "('Lucía Fernández', 4, '2024-05-05');";
 
     public static void main(String[] args) {
 
@@ -38,11 +37,11 @@ public class GestorTrabajadores {
             conexion = DriverManager.getConnection(url, user, password);
             sentencia = conexion.createStatement();
 
-            sentencia.execute(creaValoracion);
-            System.out.println("Tabla 'valoracion' creada correctamente.");
+            sentencia.execute(creaTrabajador);
+            System.out.println("Tabla 'trabajador' creada correctamente.");
 
-            sentencia.execute(insertaValoracion);
-            System.out.println("Valoraciones insertadas correctamente.");
+            sentencia.execute(insertaTrabajador);
+            System.out.println("Trabajadores insertados correctamente.");
 
         } catch (Exception e) {
             System.err.println(e);
