@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controladores.CoordinadorController"
+            prefWidth="900" prefHeight="600">
+
+    <children>
+
+        <VBox spacing="20" AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20"
+              AnchorPane.rightAnchor="20" AnchorPane.bottomAnchor="20">
+
+            <!-- HEADER -->
+            <HBox alignment="CENTER_LEFT" spacing="15">
+                <Label text="Panel del Coordinador"
+                       style="-fx-font-size: 26px; -fx-font-weight: bold;"/>
+            </HBox>
+
+            <!-- BARRA DE BÚSQUEDA -->
+            <HBox spacing="10">
+                <TextField fx:id="txtBuscar" promptText="Buscar trabajador..."
+                           style="-fx-font-size: 14px;"/>
+                <Button text="Buscar" fx:id="btnBuscar"
+                        style="-fx-background-color: #2E86C1; -fx-text-fill: white;"/>
+            </HBox>
+
+            <!-- TABLA PRINCIPAL -->
+            <TableView fx:id="tablaCoordinador" prefHeight="350">
+                <columns>
+                    <TableColumn fx:id="colNombre" text="Nombre" prefWidth="180"/>
+                    <TableColumn fx:id="colDepartamento" text="Departamento" prefWidth="180"/>
+                    <TableColumn fx:id="colFechaAlta" text="Fecha Alta" prefWidth="120"/>
+                    <TableColumn fx:id="colValoracion" text="Valoración" prefWidth="100"/>
+                    <TableColumn fx:id="colNota" text="Nota" prefWidth="250"/>
+                </columns>
+            </TableView>
+
+            <!-- PANEL DE ACCIONES -->
+            <HBox spacing="15" alignment="CENTER_RIGHT">
+                <Button text="Ver detalles" fx:id="btnDetalles"
+                        style="-fx-background-color: #5DADE2; -fx-text-fill: white;"/>
+                <Button text="Asignar tarea" fx:id="btnAsignar"
+                        style="-fx-background-color: #48C9B0; -fx-text-fill: white;"/>
+                <Button text="Actualizar datos" fx:id="btnActualizar"
+                        style="-fx-background-color: #F5B041; -fx-text-fill: white;"/>
+            </HBox>
+
+        </VBox>
+
+    </children>
+
+</AnchorPane>
