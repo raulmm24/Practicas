@@ -7,14 +7,14 @@
 <?import javafx.scene.control.Button?>
 <?import java.lang.String?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
+<AnchorPane prefWidth="900" prefHeight="600"
+            xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="controladores.MenuController"
-            prefWidth="400" prefHeight="300">
+            fx:controller="controladores.MenuController">
 
     <children>
         <VBox spacing="20" AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20">
-            <ImageView fitWidth="150" fitHeight="100">
+            <ImageView fitWidth="200" fitHeight="150">
                 <image>
                     <Image url="@imagenes/logoTelmark.png"/>
                 </image>

@@ -6,8 +6,7 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="controladores.CoordinadorController"
-            prefWidth="900" prefHeight="600">
+            fx:controller="controladores.CoordinadorController">
 
     <children>
 
