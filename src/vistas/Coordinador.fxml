@@ -33,7 +33,6 @@
                 <columns>
                     <TableColumn fx:id="colNombre" text="Nombre" prefWidth="180"/>
                     <TableColumn fx:id="colDepartamento" text="Departamento" prefWidth="180"/>
-                    <TableColumn fx:id="colFechaAlta" text="Fecha Alta" prefWidth="120"/>
                     <TableColumn fx:id="colValoracion" text="Valoración" prefWidth="100"/>
                     <TableColumn fx:id="colNota" text="Nota" prefWidth="250"/>
                 </columns>
@@ -47,6 +46,12 @@
                         style="-fx-background-color: #48C9B0; -fx-text-fill: white;"/>
                 <Button text="Actualizar datos" fx:id="btnActualizar"
                         style="-fx-background-color: #F5B041; -fx-text-fill: white;"/>
+            </HBox>
+
+            <!-- BOTÓN VOLVER AL MENÚ -->
+            <HBox alignment="CENTER_RIGHT">
+                <Button fx:id="btnVolver" text="Volver al menú"
+                        style="-fx-background-color: #AEB6BF; -fx-font-weight: bold; -fx-padding: 8 16;"/>
             </HBox>
 
         </VBox>
