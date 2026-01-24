@@ -11,6 +11,7 @@ import modelo.Trabajador;
 import modelo.TrabajadorDAO;
 
 import java.io.IOException;
+import java.util.List;
 
 public class SupervisorController {
 
@@ -27,6 +28,7 @@ public class SupervisorController {
     @FXML private TextArea txtNota;
 
     @FXML private Button btnVerFicha;
+    @FXML private Button btnGuardar;
     @FXML private Button btnVolver;
 
     private final TrabajadorDAO dao = new TrabajadorDAO();
@@ -51,6 +53,7 @@ public class SupervisorController {
         });
 
         btnVerFicha.setOnAction(e -> abrirFichaTrabajador());
+        btnGuardar.setOnAction(e -> guardarCambios());
         btnVolver.setOnAction(e -> volverAlMenu());
     }
 
@@ -58,10 +61,7 @@ public class SupervisorController {
         Trabajador seleccionado = tablaEquipo.getSelectionModel().getSelectedItem();
 
         if (seleccionado == null) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setHeaderText(null);
-            alert.setContentText("Selecciona un trabajador para ver su ficha.");
-            alert.showAndWait();
+            mostrarAlerta("Selecciona un trabajador para ver su ficha.");
             return;
         }
 
@@ -82,6 +82,36 @@ public class SupervisorController {
         }
     }
 
+    private void guardarCambios() {
+        Trabajador seleccionado = tablaEquipo.getSelectionModel().getSelectedItem();
+
+        if (seleccionado == null) {
+            mostrarAlerta("Selecciona un trabajador para actualizar.");
+            return;
+        }
+
+        try {
+            double nuevaValoracion = Double.parseDouble(txtValoracion.getText());
+            String nuevaNota = txtNota.getText();
+
+            boolean ok = dao.actualizarValoracionYNota(
+                    seleccionado.getId(),
+                    nuevaValoracion,
+                    nuevaNota
+            );
+
+            if (ok) {
+                mostrarAlerta("Datos actualizados correctamente.");
+                tablaEquipo.getItems().setAll(dao.obtenerTrabajadores());
+            } else {
+                mostrarAlerta("No se pudo actualizar.");
+            }
+
+        } catch (NumberFormatException e) {
+            mostrarAlerta("La valoración debe ser un número válido.");
+        }
+    }
+
     private void volverAlMenu() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/Menu.fxml"));
@@ -98,5 +128,12 @@ public class SupervisorController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void mostrarAlerta(String mensaje) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setHeaderText(null);
+        alert.setContentText(mensaje);
+        alert.showAndWait();
     }
 }
