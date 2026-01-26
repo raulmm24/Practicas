@@ -8,17 +8,15 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/Menu.fxml"));
-        Parent root = loader.load();
-
+        Parent root = FXMLLoader.load(getClass().getResource("/vistas/Login.fxml"));
         Scene scene = new Scene(root);
 
-        stage.setTitle("Sistema de Gestión");
+        stage.setTitle("Login");
         stage.setScene(scene);
         stage.show();
     }
 
     public static void main(String[] args) {
-        launch();
+        launch(args);
     }
 }

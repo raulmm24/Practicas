@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controladores.LoginController"
+            prefWidth="400" prefHeight="420">
+
+    <children>
+        <VBox spacing="20" alignment="CENTER"
+              AnchorPane.topAnchor="20"
+              AnchorPane.leftAnchor="50"
+              AnchorPane.rightAnchor="50">
+
+            <!-- LOGO DIRECTOLETMARK -->
+            <ImageView fitWidth="180" preserveRatio="true">
+                <image>
+                    <Image url="@/vistas/imagenes/logoTelmark.png"/>
+                </image>
+            </ImageView>
+
+            <Label text="Iniciar Sesión"
+                   style="-fx-font-size: 22px; -fx-font-weight: bold;"/>
+
+            <TextField fx:id="txtUsuario"
+                       promptText="Usuario"
+                       prefWidth="250"/>
+
+            <PasswordField fx:id="txtPassword"
+                           promptText="Contraseña"
+                           prefWidth="250"/>
+
+            <Button text="Entrar"
+                    fx:id="btnEntrar"
+                    onAction="#login"
+                    prefWidth="150"/>
+        </VBox>
+    </children>
+
+</AnchorPane>

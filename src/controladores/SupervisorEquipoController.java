@@ -86,17 +86,19 @@ public class SupervisorEquipoController {
 
     private void volver() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/Menu.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/Login.fxml"));
             Parent root = loader.load();
 
             Stage stage = (Stage) btnVolver.getScene().getWindow();
             stage.setScene(new Scene(root));
+            stage.setTitle("Login");
             stage.show();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 
     private void mostrar(String msg) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);

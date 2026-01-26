@@ -114,21 +114,19 @@ public class SupervisorController {
 
     private void volverAlMenu() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/Menu.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/Login.fxml"));
             Parent root = loader.load();
 
-            Stage stage = new Stage();
-            stage.setTitle("Menú Principal");
+            Stage stage = (Stage) btnVolver.getScene().getWindow();
             stage.setScene(new Scene(root));
+            stage.setTitle("Login");
             stage.show();
-
-            Stage ventanaActual = (Stage) btnVolver.getScene().getWindow();
-            ventanaActual.close();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 
     private void mostrarAlerta(String mensaje) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
