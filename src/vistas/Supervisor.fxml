@@ -11,13 +11,7 @@
 
         <VBox spacing="20" AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20"
               AnchorPane.rightAnchor="20" AnchorPane.bottomAnchor="20">
-
-            <!-- TÍTULO -->
-            <HBox alignment="CENTER">
-                <Label text="Panel del Supervisor"
-                       style="-fx-font-size: 26px; -fx-font-weight: bold;"/>
-            </HBox>
-
+            
             <!-- TABLA DE TRABAJADORES -->
             <VBox spacing="10">
                 <Label text="Mi equipo:" style="-fx-font-size: 16px;"/>

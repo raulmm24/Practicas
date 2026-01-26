@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controladores.SupervisorEquipoController">
+
+    <top>
+        <VBox spacing="10" alignment="CENTER" style="-fx-padding: 15;">
+            <Label text="Gestión de Equipo del Supervisor"
+                   style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+            <HBox spacing="10" alignment="CENTER">
+                <Label text="Departamento:"/>
+                <ComboBox fx:id="comboDepartamento" prefWidth="200"/>
+                <Button fx:id="btnCargar" text="Cargar trabajadores"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <TableView fx:id="tablaEquipo">
+            <columns>
+                <TableColumn fx:id="colSeleccion" text="Sel." prefWidth="60"/>
+                <TableColumn fx:id="colNombre" text="Nombre" prefWidth="200"/>
+                <TableColumn fx:id="colDepartamento" text="Departamento" prefWidth="150"/>
+                <TableColumn fx:id="colValoracion" text="Valoración" prefWidth="100"/>
+                <TableColumn fx:id="colNota" text="Nota" prefWidth="250"/>
+            </columns>
+        </TableView>
+    </center>
+
+    <bottom>
+        <HBox spacing="15" alignment="CENTER" style="-fx-padding: 15;">
+            <Button fx:id="btnGuardar" text="Guardar equipo"/>
+            <Button fx:id="btnVolver" text="Volver"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

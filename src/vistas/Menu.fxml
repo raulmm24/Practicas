@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -14,6 +16,7 @@
 
     <children>
         <VBox spacing="20" AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20">
+
             <ImageView fitWidth="200" fitHeight="150">
                 <image>
                     <Image url="@imagenes/logoTelmark.png"/>
@@ -31,6 +34,7 @@
             </ComboBox>
 
             <Button text="Entrar" fx:id="btnEntrar" onAction="#entrarSistema"/>
+
         </VBox>
     </children>
 
