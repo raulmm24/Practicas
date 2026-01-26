@@ -6,12 +6,17 @@ import java.util.List;
 
 public class TrabajadorDAO {
 
+    // ============================================================
+    // CONSULTA BASE (LEFT JOIN para que no desaparezca nadie)
+    // ============================================================
     private static final String SQL_BASE =
-            "SELECT t.id_empleado, t.nombre, d.nombre AS departamento, " +
-                    "v.valoracion, v.nota_trabajador " +
+            "SELECT t.id_empleado, t.nombre, " +
+                    "IFNULL(d.nombre, 'Sin departamento') AS departamento, " +
+                    "IFNULL(v.valoracion, 0) AS valoracion, " +
+                    "IFNULL(v.nota_trabajador, '') AS nota_trabajador " +
                     "FROM trabajador t " +
-                    "JOIN departamento d ON t.departamento = d.id_dpto " +
-                    "JOIN valoracion v ON t.id_empleado = v.id_trabajador ";
+                    "LEFT JOIN departamento d ON t.departamento = d.id_dpto " +
+                    "LEFT JOIN valoracion v ON t.id_empleado = v.id_trabajador ";
 
     // ============================================================
     // 1. OBTENER TODOS LOS TRABAJADORES
@@ -33,7 +38,7 @@ public class TrabajadorDAO {
                 ));
             }
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
@@ -74,7 +79,7 @@ public class TrabajadorDAO {
                 ));
             }
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
@@ -82,21 +87,35 @@ public class TrabajadorDAO {
     }
 
     // ============================================================
-    // 3. ACTUALIZAR VALORACIÓN Y NOTA
+    // 3. ACTUALIZAR VALORACIÓN Y NOTA (con inserción automática)
     // ============================================================
     public boolean actualizarValoracionYNota(int idTrabajador, double valoracion, String nota) {
-        String sql = "UPDATE valoracion SET valoracion = ?, nota_trabajador = ? WHERE id_trabajador = ?";
 
-        try (Connection conn = new ConexionMySQL().conexionBBDD();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        String sqlUpdate = "UPDATE valoracion SET valoracion = ?, nota_trabajador = ? WHERE id_trabajador = ?";
+        String sqlInsert = "INSERT INTO valoracion (id_trabajador, valoracion, nota_trabajador) VALUES (?, ?, ?)";
 
+        try (Connection conn = new ConexionMySQL().conexionBBDD()) {
+
+            // Intentar actualizar primero
+            PreparedStatement stmt = conn.prepareStatement(sqlUpdate);
             stmt.setDouble(1, valoracion);
             stmt.setString(2, nota);
             stmt.setInt(3, idTrabajador);
 
-            return stmt.executeUpdate() > 0;
+            int filas = stmt.executeUpdate();
 
-        } catch (Exception e) {
+            // Si no existía la valoración, insertarla
+            if (filas == 0) {
+                PreparedStatement insert = conn.prepareStatement(sqlInsert);
+                insert.setInt(1, idTrabajador);
+                insert.setDouble(2, valoracion);
+                insert.setString(3, nota);
+                insert.executeUpdate();
+            }
+
+            return true;
+
+        } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
