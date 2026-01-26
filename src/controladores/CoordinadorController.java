@@ -6,7 +6,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Stage;
+import javafx.util.converter.DoubleStringConverter;
 import modelo.Trabajador;
 import modelo.TrabajadorDAO;
 
@@ -40,22 +42,49 @@ public class CoordinadorController {
         colValoracion.setCellValueFactory(new PropertyValueFactory<>("valoracion"));
         colNota.setCellValueFactory(new PropertyValueFactory<>("nota"));
 
+        // Hacer tabla editable
+        tablaCoordinador.setEditable(true);
+
+        colValoracion.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
+        colNota.setCellFactory(TextFieldTableCell.forTableColumn());
+
+        // Guardar cambios al editar valoración
+        colValoracion.setOnEditCommit(event -> {
+            Trabajador t = event.getRowValue();
+            double nuevaValoracion = event.getNewValue();
+            t.setValoracion(nuevaValoracion);
+            dao.actualizarValoracionYNota(t.getId(), nuevaValoracion, t.getNota());
+        });
+
+        // Guardar cambios al editar nota
+        colNota.setOnEditCommit(event -> {
+            Trabajador t = event.getRowValue();
+            String nuevaNota = event.getNewValue();
+            t.setNota(nuevaNota);
+            dao.actualizarValoracionYNota(t.getId(), t.getValoracion(), nuevaNota);
+        });
+
         // Cargar datos iniciales
-        tablaCoordinador.getItems().setAll(dao.obtenerTrabajadores());
+        refrescarTabla();
 
         // Eventos
         btnBuscar.setOnAction(e -> buscarTrabajador());
         btnDetalles.setOnAction(e -> verDetalles());
         btnAsignar.setOnAction(e -> asignarTarea());
-        btnActualizar.setOnAction(e -> actualizarDatos());
+        btnActualizar.setOnAction(e -> refrescarTabla());
         btnVolver.setOnAction(e -> volverAlMenu());
+    }
+
+    // MÉTODO CENTRAL PARA RECARGAR LA TABLA
+    public void refrescarTabla() {
+        tablaCoordinador.getItems().setAll(dao.obtenerTrabajadores());
     }
 
     private void buscarTrabajador() {
         String filtro = txtBuscar.getText().trim();
 
         if (filtro.isEmpty()) {
-            tablaCoordinador.getItems().setAll(dao.obtenerTrabajadores());
+            refrescarTabla();
             return;
         }
 
@@ -90,11 +119,6 @@ public class CoordinadorController {
 
     private void asignarTarea() {
         mostrarAlerta("Función de asignar tarea aún no implementada.");
-    }
-
-    private void actualizarDatos() {
-        tablaCoordinador.getItems().setAll(dao.obtenerTrabajadores());
-        mostrarAlerta("Datos actualizados correctamente.");
     }
 
     private void volverAlMenu() {
