@@ -13,12 +13,6 @@
         <VBox spacing="20" AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20"
               AnchorPane.rightAnchor="20" AnchorPane.bottomAnchor="20">
 
-            <!-- HEADER -->
-            <HBox alignment="CENTER_LEFT" spacing="15">
-                <Label text="Panel del Coordinador"
-                       style="-fx-font-size: 26px; -fx-font-weight: bold;"/>
-            </HBox>
-
             <!-- BARRA DE BÚSQUEDA -->
             <HBox spacing="10">
                 <TextField fx:id="txtBuscar" promptText="Buscar trabajador..."

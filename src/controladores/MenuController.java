@@ -23,7 +23,7 @@ public class MenuController {
 
         try {
             String archivoFXML = switch (rol) {
-                case "Supervisor" -> "/vistas/Supervisor.fxml";
+                case "Supervisor" -> "/vistas/SupervisorEquipo.fxml";
                 case "Coordinador" -> "/vistas/Coordinador.fxml";
                 case "Trabajador" -> "/vistas/Trabajador.fxml";
                 default -> null;
