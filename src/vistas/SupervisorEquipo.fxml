@@ -1,41 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="controladores.SupervisorEquipoController">
+<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controladores.SupervisorEquipoController"
+            prefWidth="800" prefHeight="550">
 
-    <top>
-        <VBox spacing="10" alignment="CENTER" style="-fx-padding: 15;">
-            <Label text="Gestión de Equipo del Supervisor"
-                   style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
-            <HBox spacing="10" alignment="CENTER">
-                <Label text="Departamento:"/>
-                <ComboBox fx:id="comboDepartamento" prefWidth="200"/>
-                <Button fx:id="btnCargar" text="Cargar trabajadores"/>
-            </HBox>
-        </VBox>
-    </top>
+    <!-- TÍTULO -->
+    <Label text="Gestión de Equipo" layoutX="30" layoutY="20"
+           style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
 
-    <center>
-        <TableView fx:id="tablaEquipo">
-            <columns>
-                <TableColumn fx:id="colSeleccion" text="Sel." prefWidth="60"/>
-                <TableColumn fx:id="colNombre" text="Nombre" prefWidth="200"/>
-                <TableColumn fx:id="colDepartamento" text="Departamento" prefWidth="150"/>
-                <TableColumn fx:id="colValoracion" text="Valoración" prefWidth="100"/>
-                <TableColumn fx:id="colNota" text="Nota" prefWidth="250"/>
-            </columns>
-        </TableView>
-    </center>
+    <!-- COMBO DEPARTAMENTOS -->
+    <Label text="Departamento:" layoutX="30" layoutY="80"
+           style="-fx-font-size: 14px;"/>
+    <ComboBox fx:id="comboDepartamento" layoutX="140" layoutY="75"
+              prefWidth="200"/>
 
-    <bottom>
-        <HBox spacing="15" alignment="CENTER" style="-fx-padding: 15;">
-            <Button fx:id="btnGuardar" text="Guardar equipo"/>
-            <Button fx:id="btnVolver" text="Volver"/>
-        </HBox>
-    </bottom>
+    <Button fx:id="btnCargar" text="Cargar" layoutX="360" layoutY="75"
+            prefWidth="100"/>
 
-</BorderPane>
+    <!-- TABLA -->
+    <TableView fx:id="tablaEquipo" layoutX="30" layoutY="120"
+               prefWidth="740" prefHeight="350">
+
+        <columns>
+
+            <!-- Selección -->
+            <TableColumn fx:id="colSeleccion" text="✓" prefWidth="50"/>
+
+            <!-- Nombre -->
+            <TableColumn fx:id="colNombre" text="Nombre" prefWidth="150"/>
+
+            <!-- Departamento -->
+            <TableColumn fx:id="colDepartamento" text="Departamento" prefWidth="150"/>
+
+            <!-- Supervisor (NUEVO) -->
+            <TableColumn fx:id="colSupervisor" text="Supervisor" prefWidth="150"/>
+
+            <!-- Valoración -->
+            <TableColumn fx:id="colValoracion" text="Valoración" prefWidth="100"/>
+
+            <!-- Nota -->
+            <TableColumn fx:id="colNota" text="Nota" prefWidth="250"/>
+
+        </columns>
+
+    </TableView>
+
+    <!-- BOTONES ABAJO -->
+    <Button fx:id="btnGuardar" text="Guardar Cambios"
+            layoutX="30" layoutY="490" prefWidth="200"/>
+
+    <Button fx:id="btnVolver" text="Volver"
+            layoutX="650" layoutY="490" prefWidth="120"/>
+
+</AnchorPane>

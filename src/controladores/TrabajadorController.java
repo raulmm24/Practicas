@@ -32,26 +32,7 @@ public class TrabajadorController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
 
         btnBuscar.setOnAction(e -> buscarEmpleado());
-
-        btnVolver.setOnAction(e -> {
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/Login.fxml"));
-                Parent root = loader.load();
-
-                Stage stage = new Stage();
-                stage.setTitle("Menú Principal");
-                stage.setScene(new Scene(root));
-                stage.show();
-
-                // Cerrar la ventana actual
-                Stage ventanaActual = (Stage) btnVolver.getScene().getWindow();
-                ventanaActual.close();
-
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        });
-
+        btnVolver.setOnAction(e -> volver());
     }
 
     private void buscarEmpleado() {
@@ -62,14 +43,14 @@ public class TrabajadorController implements Initializable {
             return;
         }
 
-        List<Trabajador> resultados = dao.buscarTrabajadores(filtro);
+        List<Trabajador> resultados = dao.obtenerTrabajadores(filtro);
 
         if (resultados.isEmpty()) {
             mostrarAlerta("No se encontró ningún empleado con ese nombre.");
+            limpiarCampos();
             return;
         }
 
-        // Tomamos el primer resultado
         setTrabajador(resultados.get(0));
     }
 
@@ -82,6 +63,29 @@ public class TrabajadorController implements Initializable {
         txtNota.setText(t.getNota());
     }
 
+    private void limpiarCampos() {
+        txtNombre.clear();
+        txtDepartamento.clear();
+        txtValoracion.clear();
+        txtNota.clear();
+    }
+
+    private void volver() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/Login.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) btnVolver.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Login");
+            stage.show();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            mostrarAlerta("No se pudo volver al login.");
+        }
+    }
+
     private void mostrarAlerta(String mensaje) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setHeaderText(null);
@@ -89,4 +93,3 @@ public class TrabajadorController implements Initializable {
         alert.showAndWait();
     }
 }
-

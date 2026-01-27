@@ -6,19 +6,27 @@ import java.util.List;
 
 public class SupervisorDAO {
 
-    // Obtener nombres de departamentos
+    private final Connection conn;
+
+    public SupervisorDAO() {
+        conn = new ConexionMySQL().conexionBBDD();
+        if (conn == null) {
+            System.err.println("ERROR: No se pudo conectar a la base de datos.");
+        }
+    }
+
+    // 1. Obtener lista de nombres de departamentos
     public List<String> obtenerDepartamentos() {
         List<String> lista = new ArrayList<>();
+        if (conn == null) return lista;
+
         String sql = "SELECT nombre FROM departamento ORDER BY nombre";
 
-        try (Connection conn = new ConexionMySQL().conexionBBDD();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-
+        try (PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 lista.add(rs.getString("nombre"));
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -26,62 +34,34 @@ public class SupervisorDAO {
         return lista;
     }
 
-    // Obtener ID de departamento por nombre
-    public Integer obtenerIdDepartamentoPorNombre(String nombreDpto) {
-        String sql = "SELECT id_dpto FROM departamento WHERE nombre = ?";
-
-        try (Connection conn = new ConexionMySQL().conexionBBDD();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, nombreDpto);
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                return rs.getInt("id_dpto");
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    // Obtener trabajadores del departamento con valoración y nota
-    public List<TrabajadorSeleccion> obtenerTrabajadoresPorDepartamento(int idDepartamento, int idSupervisor) {
+    // 2. Obtener trabajadores por nombre de departamento
+    public List<TrabajadorSeleccion> obtenerTrabajadoresPorDepartamento(String nombreDepartamento) {
         List<TrabajadorSeleccion> lista = new ArrayList<>();
+        if (conn == null) return lista;
 
         String sql =
                 "SELECT t.id_empleado, t.nombre, d.nombre AS departamento, " +
                         "IFNULL(v.valoracion, 0) AS valoracion, " +
                         "IFNULL(v.nota_trabajador, '') AS nota, " +
-                        "t.id_supervisor " +
+                        "IFNULL(t.id_supervisor, 0) AS supervisor " +
                         "FROM trabajador t " +
-                        "LEFT JOIN departamento d ON t.departamento = d.id_dpto " +
+                        "JOIN departamento d ON t.departamento = d.id_dpto " +
                         "LEFT JOIN valoracion v ON t.id_empleado = v.id_trabajador " +
-                        "WHERE t.departamento = ?";
+                        "WHERE d.nombre = ?";
 
-        try (Connection conn = new ConexionMySQL().conexionBBDD();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, idDepartamento);
-            ResultSet rs = stmt.executeQuery();
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, nombreDepartamento);
+            ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                TrabajadorSeleccion t = new TrabajadorSeleccion(
+                lista.add(new TrabajadorSeleccion(
                         rs.getInt("id_empleado"),
                         rs.getString("nombre"),
                         rs.getString("departamento"),
                         rs.getDouble("valoracion"),
                         rs.getString("nota"),
-                        (Integer) rs.getObject("id_supervisor")
-                );
-
-                if (t.getIdSupervisor() != null && t.getIdSupervisor() == idSupervisor) {
-                    t.setSeleccionado(true);
-                }
-
-                lista.add(t);
+                        rs.getInt("supervisor")
+                ));
             }
 
         } catch (SQLException e) {
@@ -91,75 +71,61 @@ public class SupervisorDAO {
         return lista;
     }
 
-    // Asignar equipo al supervisor
-    public void asignarEquipo(int idSupervisor, List<Integer> idsTrabajadoresSeleccionados, int idDepartamento) {
+    // 3. Asignar equipo a supervisor por nombre de departamento
+    public void asignarEquipo(int idSupervisor, List<Integer> trabajadores, String nombreDepartamento) {
+        if (conn == null) return;
 
-        String limpiarSQL = "UPDATE trabajador SET id_supervisor = NULL WHERE departamento = ? AND id_supervisor = ?";
-        String asignarSQL = "UPDATE trabajador SET id_supervisor = ? WHERE id_empleado = ?";
+        String sql = "UPDATE trabajador SET id_supervisor = ? WHERE id_empleado = ? AND departamento = " +
+                "(SELECT id_dpto FROM departamento WHERE nombre = ?)";
 
-        try (Connection conn = new ConexionMySQL().conexionBBDD()) {
-
-            try (PreparedStatement limpiar = conn.prepareStatement(limpiarSQL)) {
-                limpiar.setInt(1, idDepartamento);
-                limpiar.setInt(2, idSupervisor);
-                limpiar.executeUpdate();
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            for (Integer idTrabajador : trabajadores) {
+                ps.setInt(1, idSupervisor);
+                ps.setInt(2, idTrabajador);
+                ps.setString(3, nombreDepartamento);
+                ps.executeUpdate();
             }
-
-            try (PreparedStatement asignar = conn.prepareStatement(asignarSQL)) {
-                for (int idTrabajador : idsTrabajadoresSeleccionados) {
-                    asignar.setInt(1, idSupervisor);
-                    asignar.setInt(2, idTrabajador);
-                    asignar.executeUpdate();
-                }
-            }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    // Actualizar valoración y nota en tabla valoracion
-    public void actualizarValoracionYNota(int idTrabajador, double valoracion, String nota) {
-        try (Connection con = new ConexionMySQL().conexionBBDD()) {
+    // 4. Guardar historial de cambios
+    public void guardarHistorial(int idTrabajador, int idSupervisor,
+                                 double valorAnterior, double valorNueva,
+                                 String notaAnterior, String notaNueva) {
+        if (conn == null) return;
 
-            PreparedStatement ps = con.prepareStatement(
-                    "REPLACE INTO valoracion (id_trabajador, valoracion, nota_trabajador) VALUES (?, ?, ?)"
-            );
+        String sql =
+                "INSERT INTO historial_valoracion " +
+                        "(id_trabajador, id_supervisor, fecha, valoracion_anterior, valoracion_nueva, nota_anterior, nota_nueva) " +
+                        "VALUES (?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?)";
 
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, idTrabajador);
-            ps.setDouble(2, valoracion);
-            ps.setString(3, nota);
-
+            ps.setInt(2, idSupervisor);
+            ps.setDouble(3, valorAnterior);
+            ps.setDouble(4, valorNueva);
+            ps.setString(5, notaAnterior);
+            ps.setString(6, notaNueva);
             ps.executeUpdate();
-
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    // Guardar historial de cambios
-    public void guardarHistorial(int idTrabajador, int idSupervisor,
-                                 double valoracionAnterior, double valoracionNueva,
-                                 String notaAnterior, String notaNueva) {
+    // 5. Actualizar valoración y nota
+    public void actualizarValoracionYNota(int idTrabajador, double valoracion, String nota) {
+        if (conn == null) return;
 
-        try (Connection con = new ConexionMySQL().conexionBBDD()) {
+        String sql = "REPLACE INTO valoracion (id_trabajador, valoracion, nota_trabajador) VALUES (?, ?, ?)";
 
-            PreparedStatement ps = con.prepareStatement(
-                    "INSERT INTO historial_valoracion " +
-                            "(id_trabajador, id_supervisor, valoracion_anterior, valoracion_nueva, nota_anterior, nota_nueva) " +
-                            "VALUES (?, ?, ?, ?, ?, ?)"
-            );
-
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, idTrabajador);
-            ps.setInt(2, idSupervisor);
-            ps.setDouble(3, valoracionAnterior);
-            ps.setDouble(4, valoracionNueva);
-            ps.setString(5, notaAnterior);
-            ps.setString(6, notaNueva);
-
+            ps.setDouble(2, valoracion);
+            ps.setString(3, nota);
             ps.executeUpdate();
-
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }

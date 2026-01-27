@@ -9,17 +9,15 @@ public class HistorialValoracion {
     private final DoubleProperty valoracionNueva;
     private final StringProperty notaAnterior;
     private final StringProperty notaNueva;
-    private final StringProperty supervisor;
 
-    public HistorialValoracion(String fecha, double valoracionAnterior, double valoracionNueva,
-                               String notaAnterior, String notaNueva, String supervisor) {
+    public HistorialValoracion(String fecha, double valAnt, double valNueva,
+                               String notaAnt, String notaNueva) {
 
         this.fecha = new SimpleStringProperty(fecha);
-        this.valoracionAnterior = new SimpleDoubleProperty(valoracionAnterior);
-        this.valoracionNueva = new SimpleDoubleProperty(valoracionNueva);
-        this.notaAnterior = new SimpleStringProperty(notaAnterior);
+        this.valoracionAnterior = new SimpleDoubleProperty(valAnt);
+        this.valoracionNueva = new SimpleDoubleProperty(valNueva);
+        this.notaAnterior = new SimpleStringProperty(notaAnt);
         this.notaNueva = new SimpleStringProperty(notaNueva);
-        this.supervisor = new SimpleStringProperty(supervisor);
     }
 
     public StringProperty fechaProperty() { return fecha; }
@@ -27,5 +25,4 @@ public class HistorialValoracion {
     public DoubleProperty valoracionNuevaProperty() { return valoracionNueva; }
     public StringProperty notaAnteriorProperty() { return notaAnterior; }
     public StringProperty notaNuevaProperty() { return notaNueva; }
-    public StringProperty supervisorProperty() { return supervisor; }
 }

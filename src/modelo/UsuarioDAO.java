@@ -4,24 +4,33 @@ import java.sql.*;
 
 public class UsuarioDAO {
 
-    public Usuario validarLogin(String username, String password) {
+    private final Connection conn;
 
-        String sql = "SELECT * FROM usuario WHERE username = ? AND password = ?";
+    public UsuarioDAO() {
+        conn = new ConexionMySQL().conexionBBDD();
+        if (conn == null) {
+            System.err.println("ERROR: No se pudo conectar a la base de datos.");
+        }
+    }
 
-        try (Connection conn = new ConexionMySQL().conexionBBDD();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+    public Usuario login(String usuario, String password) {
 
-            stmt.setString(1, username);
-            stmt.setString(2, password);
+        if (conn == null) return null;
 
-            ResultSet rs = stmt.executeQuery();
+        String sql = "SELECT * FROM usuario WHERE usuario = ? AND password = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, usuario);
+            ps.setString(2, password);
+
+            ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
                 return new Usuario(
-                        rs.getInt("id"),
-                        rs.getString("username"),
-                        rs.getString("rol"),
-                        (Integer) rs.getObject("id_trabajador")
+                        rs.getInt("id_usuario"),
+                        rs.getString("usuario"),
+                        rs.getString("password"),
+                        rs.getInt("rol")
                 );
             }
 

@@ -6,7 +6,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -21,11 +20,13 @@ public class SupervisorEquipoController {
 
     @FXML private ComboBox<String> comboDepartamento;
     @FXML private TableView<TrabajadorSeleccion> tablaEquipo;
+
     @FXML private TableColumn<TrabajadorSeleccion, Boolean> colSeleccion;
     @FXML private TableColumn<TrabajadorSeleccion, String> colNombre;
     @FXML private TableColumn<TrabajadorSeleccion, String> colDepartamento;
     @FXML private TableColumn<TrabajadorSeleccion, Double> colValoracion;
     @FXML private TableColumn<TrabajadorSeleccion, String> colNota;
+    @FXML private TableColumn<TrabajadorSeleccion, String> colSupervisor;
 
     @FXML private Button btnCargar;
     @FXML private Button btnGuardar;
@@ -43,9 +44,10 @@ public class SupervisorEquipoController {
 
         tablaEquipo.setEditable(true);
 
+        // Cargar departamentos
         comboDepartamento.getItems().setAll(dao.obtenerDepartamentos());
 
-        // ✔ TICK VERDE CENTRADO
+        // Columna selección con tick verde
         colSeleccion.setCellValueFactory(cellData -> cellData.getValue().seleccionadoProperty());
         colSeleccion.setCellFactory(col -> new TableCell<TrabajadorSeleccion, Boolean>() {
             @Override
@@ -75,23 +77,27 @@ public class SupervisorEquipoController {
             }
         });
 
-        colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
-        colDepartamento.setCellValueFactory(new PropertyValueFactory<>("departamento"));
+        // Columnas normales
+        colNombre.setCellValueFactory(c -> c.getValue().nombreProperty());
+        colDepartamento.setCellValueFactory(c -> c.getValue().departamentoProperty());
+        colValoracion.setCellValueFactory(c -> c.getValue().valoracionProperty().asObject());
+        colNota.setCellValueFactory(c -> c.getValue().notaProperty());
+        colSupervisor.setCellValueFactory(c -> c.getValue().supervisorProperty());
 
-        // ✔ VALORACIÓN EDITABLE
-        colValoracion.setCellValueFactory(new PropertyValueFactory<>("valoracion"));
+        // Valoración editable
         colValoracion.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
         colValoracion.setOnEditCommit(event -> {
             TrabajadorSeleccion t = event.getRowValue();
             t.setValoracion(event.getNewValue());
+            tablaEquipo.refresh();
         });
 
-        // ✔ NOTA EDITABLE
-        colNota.setCellValueFactory(new PropertyValueFactory<>("nota"));
+        // Nota editable
         colNota.setCellFactory(TextFieldTableCell.forTableColumn());
         colNota.setOnEditCommit(event -> {
             TrabajadorSeleccion t = event.getRowValue();
             t.setNota(event.getNewValue());
+            tablaEquipo.refresh();
         });
 
         btnCargar.setOnAction(e -> cargarTrabajadores());
@@ -106,13 +112,7 @@ public class SupervisorEquipoController {
             return;
         }
 
-        Integer idDpto = dao.obtenerIdDepartamentoPorNombre(nombreDpto);
-        if (idDpto == null) {
-            mostrar("Departamento no encontrado.");
-            return;
-        }
-
-        List<TrabajadorSeleccion> lista = dao.obtenerTrabajadoresPorDepartamento(idDpto, idSupervisor);
+        List<TrabajadorSeleccion> lista = dao.obtenerTrabajadoresPorDepartamento(nombreDpto);
         tablaEquipo.getItems().setAll(lista);
     }
 
@@ -123,17 +123,13 @@ public class SupervisorEquipoController {
             return;
         }
 
-        Integer idDpto = dao.obtenerIdDepartamentoPorNombre(nombreDpto);
-
         List<Integer> seleccionados = tablaEquipo.getItems().stream()
                 .filter(TrabajadorSeleccion::isSeleccionado)
                 .map(TrabajadorSeleccion::getId)
                 .collect(Collectors.toList());
 
-        // ✔ Guardar equipo
-        dao.asignarEquipo(idSupervisor, seleccionados, idDpto);
+        dao.asignarEquipo(idSupervisor, seleccionados, nombreDpto);
 
-        // ✔ Guardar historial + actualizar valoración y nota
         for (TrabajadorSeleccion t : tablaEquipo.getItems()) {
 
             double valoracionAnterior = t.getValoracionOriginal();
@@ -158,9 +154,13 @@ public class SupervisorEquipoController {
                         valoracionNueva,
                         notaNueva
                 );
+
+                t.setValoracionOriginal(valoracionNueva);
+                t.setNotaOriginal(notaNueva);
             }
         }
 
+        tablaEquipo.refresh();
         mostrar("Cambios guardados correctamente.");
     }
 

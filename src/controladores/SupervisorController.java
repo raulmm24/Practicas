@@ -5,13 +5,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import modelo.Trabajador;
 import modelo.TrabajadorDAO;
 
 import java.io.IOException;
-import java.util.List;
 
 public class SupervisorController {
 
@@ -36,13 +34,16 @@ public class SupervisorController {
     @FXML
     public void initialize() {
 
-        colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
-        colDepartamento.setCellValueFactory(new PropertyValueFactory<>("departamento"));
-        colValoracion.setCellValueFactory(new PropertyValueFactory<>("valoracion"));
-        colNota.setCellValueFactory(new PropertyValueFactory<>("nota"));
+        // Enlazar columnas con propiedades del modelo
+        colNombre.setCellValueFactory(c -> c.getValue().nombreProperty());
+        colDepartamento.setCellValueFactory(c -> c.getValue().departamentoProperty());
+        colValoracion.setCellValueFactory(c -> c.getValue().valoracionProperty().asObject());
+        colNota.setCellValueFactory(c -> c.getValue().notaProperty());
 
+        // Cargar trabajadores reales en la tabla (NO Strings)
         tablaEquipo.getItems().setAll(dao.obtenerTrabajadores());
 
+        // Listener para seleccionar trabajador
         tablaEquipo.getSelectionModel().selectedItemProperty().addListener((obs, oldSel, newSel) -> {
             if (newSel != null) {
                 txtNombre.setText(newSel.getNombre());
@@ -91,18 +92,41 @@ public class SupervisorController {
         }
 
         try {
+            if (txtValoracion.getText().isEmpty()) {
+                mostrarAlerta("La valoración no puede estar vacía.");
+                return;
+            }
+
+            double valoracionAnterior = seleccionado.getValoracion();
+            String notaAnterior = seleccionado.getNota();
+
             double nuevaValoracion = Double.parseDouble(txtValoracion.getText());
             String nuevaNota = txtNota.getText();
 
+            // Actualizar en memoria
+            seleccionado.setValoracion(nuevaValoracion);
+            seleccionado.setNota(nuevaNota);
+
+            // Actualizar en BD
             boolean ok = dao.actualizarValoracionYNota(
                     seleccionado.getId(),
                     nuevaValoracion,
                     nuevaNota
             );
 
+            // Registrar historial
+            dao.insertarHistorial(
+                    seleccionado.getId(),
+                    1, // id_supervisor
+                    valoracionAnterior,
+                    nuevaValoracion,
+                    notaAnterior,
+                    nuevaNota
+            );
+
             if (ok) {
                 mostrarAlerta("Datos actualizados correctamente.");
-                tablaEquipo.getItems().setAll(dao.obtenerTrabajadores());
+                tablaEquipo.refresh();
             } else {
                 mostrarAlerta("No se pudo actualizar.");
             }
@@ -126,7 +150,6 @@ public class SupervisorController {
             e.printStackTrace();
         }
     }
-
 
     private void mostrarAlerta(String mensaje) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
