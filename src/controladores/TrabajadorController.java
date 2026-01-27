@@ -17,14 +17,15 @@ import java.util.ResourceBundle;
 public class TrabajadorController implements Initializable {
 
     @FXML private TextField txtBuscar;
-
-    @FXML private TextField txtNombre;
-    @FXML private TextField txtDepartamento;
-    @FXML private TextField txtValoracion;
-    @FXML private TextArea txtNota;
-
     @FXML private Button btnBuscar;
     @FXML private Button btnVolver;
+
+    @FXML private TableView<Trabajador> tablaTrabajadores;
+    @FXML private TableColumn<Trabajador, Number> colId;
+    @FXML private TableColumn<Trabajador, String> colNombre;
+    @FXML private TableColumn<Trabajador, String> colDepartamento;
+    @FXML private TableColumn<Trabajador, Number> colValoracion;
+    @FXML private TableColumn<Trabajador, String> colNota;
 
     private final TrabajadorDAO dao = new TrabajadorDAO();
 
@@ -33,6 +34,13 @@ public class TrabajadorController implements Initializable {
 
         btnBuscar.setOnAction(e -> buscarEmpleado());
         btnVolver.setOnAction(e -> volver());
+
+        // Configurar columnas
+        colId.setCellValueFactory(c -> c.getValue().idProperty());
+        colNombre.setCellValueFactory(c -> c.getValue().nombreProperty());
+        colDepartamento.setCellValueFactory(c -> c.getValue().departamentoProperty());
+        colValoracion.setCellValueFactory(c -> c.getValue().valoracionProperty());
+        colNota.setCellValueFactory(c -> c.getValue().notaProperty());
     }
 
     private void buscarEmpleado() {
@@ -47,27 +55,11 @@ public class TrabajadorController implements Initializable {
 
         if (resultados.isEmpty()) {
             mostrarAlerta("No se encontró ningún empleado con ese nombre.");
-            limpiarCampos();
+            tablaTrabajadores.getItems().clear();
             return;
         }
 
-        setTrabajador(resultados.get(0));
-    }
-
-    public void setTrabajador(Trabajador t) {
-        if (t == null) return;
-
-        txtNombre.setText(t.getNombre());
-        txtDepartamento.setText(t.getDepartamento());
-        txtValoracion.setText(String.valueOf(t.getValoracion()));
-        txtNota.setText(t.getNota());
-    }
-
-    private void limpiarCampos() {
-        txtNombre.clear();
-        txtDepartamento.clear();
-        txtValoracion.clear();
-        txtNota.clear();
+        tablaTrabajadores.getItems().setAll(resultados);
     }
 
     private void volver() {

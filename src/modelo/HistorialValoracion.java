@@ -1,28 +1,39 @@
 package modelo;
 
-import javafx.beans.property.*;
-
 public class HistorialValoracion {
 
-    private final StringProperty fecha;
-    private final DoubleProperty valoracionAnterior;
-    private final DoubleProperty valoracionNueva;
-    private final StringProperty notaAnterior;
-    private final StringProperty notaNueva;
+    private final String fecha;
+    private final double valoracionAnterior;
+    private final double valoracionNueva;
+    private final String notaAnterior;
+    private final String notaNueva;
 
-    public HistorialValoracion(String fecha, double valAnt, double valNueva,
-                               String notaAnt, String notaNueva) {
-
-        this.fecha = new SimpleStringProperty(fecha);
-        this.valoracionAnterior = new SimpleDoubleProperty(valAnt);
-        this.valoracionNueva = new SimpleDoubleProperty(valNueva);
-        this.notaAnterior = new SimpleStringProperty(notaAnt);
-        this.notaNueva = new SimpleStringProperty(notaNueva);
+    public HistorialValoracion(String fecha, double valoracionAnterior, double valoracionNueva,
+                               String notaAnterior, String notaNueva) {
+        this.fecha = fecha;
+        this.valoracionAnterior = valoracionAnterior;
+        this.valoracionNueva = valoracionNueva;
+        this.notaAnterior = notaAnterior;
+        this.notaNueva = notaNueva;
     }
 
-    public StringProperty fechaProperty() { return fecha; }
-    public DoubleProperty valoracionAnteriorProperty() { return valoracionAnterior; }
-    public DoubleProperty valoracionNuevaProperty() { return valoracionNueva; }
-    public StringProperty notaAnteriorProperty() { return notaAnterior; }
-    public StringProperty notaNuevaProperty() { return notaNueva; }
+    public String getFecha() {
+        return fecha;
+    }
+
+    public double getValoracionAnterior() {
+        return valoracionAnterior;
+    }
+
+    public double getValoracionNueva() {
+        return valoracionNueva;
+    }
+
+    public String getNotaAnterior() {
+        return notaAnterior;
+    }
+
+    public String getNotaNueva() {
+        return notaNueva;
+    }
 }
