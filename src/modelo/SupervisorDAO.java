@@ -6,6 +6,7 @@ import java.util.List;
 
 public class SupervisorDAO {
 
+    // Obtener nombres de departamentos
     public List<String> obtenerDepartamentos() {
         List<String> lista = new ArrayList<>();
         String sql = "SELECT nombre FROM departamento ORDER BY nombre";
@@ -25,6 +26,7 @@ public class SupervisorDAO {
         return lista;
     }
 
+    // Obtener ID de departamento por nombre
     public Integer obtenerIdDepartamentoPorNombre(String nombreDpto) {
         String sql = "SELECT id_dpto FROM departamento WHERE nombre = ?";
 
@@ -45,13 +47,14 @@ public class SupervisorDAO {
         return null;
     }
 
+    // Obtener trabajadores del departamento con valoración y nota
     public List<TrabajadorSeleccion> obtenerTrabajadoresPorDepartamento(int idDepartamento, int idSupervisor) {
         List<TrabajadorSeleccion> lista = new ArrayList<>();
 
         String sql =
                 "SELECT t.id_empleado, t.nombre, d.nombre AS departamento, " +
                         "IFNULL(v.valoracion, 0) AS valoracion, " +
-                        "IFNULL(v.nota_trabajador, '') AS nota_trabajador, " +
+                        "IFNULL(v.nota_trabajador, '') AS nota, " +
                         "t.id_supervisor " +
                         "FROM trabajador t " +
                         "LEFT JOIN departamento d ON t.departamento = d.id_dpto " +
@@ -70,7 +73,7 @@ public class SupervisorDAO {
                         rs.getString("nombre"),
                         rs.getString("departamento"),
                         rs.getDouble("valoracion"),
-                        rs.getString("nota_trabajador"),
+                        rs.getString("nota"),
                         (Integer) rs.getObject("id_supervisor")
                 );
 
@@ -88,6 +91,7 @@ public class SupervisorDAO {
         return lista;
     }
 
+    // Asignar equipo al supervisor
     public void asignarEquipo(int idSupervisor, List<Integer> idsTrabajadoresSeleccionados, int idDepartamento) {
 
         String limpiarSQL = "UPDATE trabajador SET id_supervisor = NULL WHERE departamento = ? AND id_supervisor = ?";
@@ -114,15 +118,17 @@ public class SupervisorDAO {
         }
     }
 
+    // Actualizar valoración y nota en tabla valoracion
     public void actualizarValoracionYNota(int idTrabajador, double valoracion, String nota) {
         try (Connection con = new ConexionMySQL().conexionBBDD()) {
 
             PreparedStatement ps = con.prepareStatement(
-                    "UPDATE trabajador SET valoracion = ?, nota = ? WHERE id_empleado = ?"
+                    "REPLACE INTO valoracion (id_trabajador, valoracion, nota_trabajador) VALUES (?, ?, ?)"
             );
-            ps.setDouble(1, valoracion);
-            ps.setString(2, nota);
-            ps.setInt(3, idTrabajador);
+
+            ps.setInt(1, idTrabajador);
+            ps.setDouble(2, valoracion);
+            ps.setString(3, nota);
 
             ps.executeUpdate();
 
@@ -131,5 +137,30 @@ public class SupervisorDAO {
         }
     }
 
+    // Guardar historial de cambios
+    public void guardarHistorial(int idTrabajador, int idSupervisor,
+                                 double valoracionAnterior, double valoracionNueva,
+                                 String notaAnterior, String notaNueva) {
 
+        try (Connection con = new ConexionMySQL().conexionBBDD()) {
+
+            PreparedStatement ps = con.prepareStatement(
+                    "INSERT INTO historial_valoracion " +
+                            "(id_trabajador, id_supervisor, valoracion_anterior, valoracion_nueva, nota_anterior, nota_nueva) " +
+                            "VALUES (?, ?, ?, ?, ?, ?)"
+            );
+
+            ps.setInt(1, idTrabajador);
+            ps.setInt(2, idSupervisor);
+            ps.setDouble(3, valoracionAnterior);
+            ps.setDouble(4, valoracionNueva);
+            ps.setString(5, notaAnterior);
+            ps.setString(6, notaNueva);
+
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

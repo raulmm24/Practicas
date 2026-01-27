@@ -41,7 +41,7 @@ public class LoginController {
                 switch (rol.toLowerCase()) {
 
                     case "coordinador":
-                        cargarVista("/vistas/Coordinador.fxml", event);
+                        cargarVista("/vistas/HistorialValoraciones.fxml", event);
                         break;
 
                     case "supervisor":
@@ -49,7 +49,7 @@ public class LoginController {
                         break;
 
                     case "trabajador":
-                        cargarVista("/vistas/PantallaAgente.fxml", event);
+                        cargarVista("/vistas/Trabajador.fxml", event);
                         break;
 
                     default:

@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 import javafx.util.converter.DoubleStringConverter;
 import modelo.SupervisorDAO;
 import modelo.TrabajadorSeleccion;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,7 +32,6 @@ public class SupervisorEquipoController {
     @FXML private Button btnVolver;
 
     private final SupervisorDAO dao = new SupervisorDAO();
-
     private int idSupervisor;
 
     public void setIdSupervisor(int id) {
@@ -128,14 +128,37 @@ public class SupervisorEquipoController {
         List<Integer> seleccionados = tablaEquipo.getItems().stream()
                 .filter(TrabajadorSeleccion::isSeleccionado)
                 .map(TrabajadorSeleccion::getId)
-                .collect(Collectors.toList()).reversed();
+                .collect(Collectors.toList());
 
         // ✔ Guardar equipo
         dao.asignarEquipo(idSupervisor, seleccionados, idDpto);
 
-        // ✔ Guardar valoraciones y notas editadas
+        // ✔ Guardar historial + actualizar valoración y nota
         for (TrabajadorSeleccion t : tablaEquipo.getItems()) {
-            dao.actualizarValoracionYNota(t.getId(), t.getValoracion(), t.getNota());
+
+            double valoracionAnterior = t.getValoracionOriginal();
+            String notaAnterior = t.getNotaOriginal();
+
+            double valoracionNueva = t.getValoracion();
+            String notaNueva = t.getNota();
+
+            if (valoracionAnterior != valoracionNueva || !notaAnterior.equals(notaNueva)) {
+
+                dao.guardarHistorial(
+                        t.getId(),
+                        idSupervisor,
+                        valoracionAnterior,
+                        valoracionNueva,
+                        notaAnterior,
+                        notaNueva
+                );
+
+                dao.actualizarValoracionYNota(
+                        t.getId(),
+                        valoracionNueva,
+                        notaNueva
+                );
+            }
         }
 
         mostrar("Cambios guardados correctamente.");
