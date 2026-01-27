@@ -113,4 +113,23 @@ public class SupervisorDAO {
             e.printStackTrace();
         }
     }
+
+    public void actualizarValoracionYNota(int idTrabajador, double valoracion, String nota) {
+        try (Connection con = new ConexionMySQL().conexionBBDD()) {
+
+            PreparedStatement ps = con.prepareStatement(
+                    "UPDATE trabajador SET valoracion = ?, nota = ? WHERE id_empleado = ?"
+            );
+            ps.setDouble(1, valoracion);
+            ps.setString(2, nota);
+            ps.setInt(3, idTrabajador);
+
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }

@@ -35,7 +35,7 @@ public class TrabajadorController implements Initializable {
 
         btnVolver.setOnAction(e -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/Menu.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/Login.fxml"));
                 Parent root = loader.load();
 
                 Stage stage = new Stage();

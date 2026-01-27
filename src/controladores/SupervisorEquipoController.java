@@ -2,15 +2,17 @@ package controladores;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import javafx.util.converter.DoubleStringConverter;
 import modelo.SupervisorDAO;
 import modelo.TrabajadorSeleccion;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,20 +31,68 @@ public class SupervisorEquipoController {
     @FXML private Button btnVolver;
 
     private final SupervisorDAO dao = new SupervisorDAO();
-    private int idSupervisor = 1; // Cambiar cuando tengas login
+
+    private int idSupervisor;
+
+    public void setIdSupervisor(int id) {
+        this.idSupervisor = id;
+    }
 
     @FXML
     public void initialize() {
 
+        tablaEquipo.setEditable(true);
+
         comboDepartamento.getItems().setAll(dao.obtenerDepartamentos());
 
+        // ✔ TICK VERDE CENTRADO
         colSeleccion.setCellValueFactory(cellData -> cellData.getValue().seleccionadoProperty());
-        colSeleccion.setCellFactory(CheckBoxTableCell.forTableColumn(colSeleccion));
+        colSeleccion.setCellFactory(col -> new TableCell<TrabajadorSeleccion, Boolean>() {
+            @Override
+            protected void updateItem(Boolean seleccionado, boolean empty) {
+                super.updateItem(seleccionado, empty);
+
+                if (empty || seleccionado == null) {
+                    setGraphic(null);
+                    return;
+                }
+
+                Label icono = new Label(seleccionado ? "✔" : "");
+                icono.setStyle("-fx-font-size: 18px; -fx-text-fill: #4CAF50; -fx-font-weight: bold;");
+
+                StackPane contenedor = new StackPane(icono);
+                contenedor.setAlignment(Pos.CENTER);
+                contenedor.setPrefWidth(Double.MAX_VALUE);
+
+                setGraphic(contenedor);
+                setText(null);
+
+                setOnMouseClicked(e -> {
+                    TrabajadorSeleccion item = getTableView().getItems().get(getIndex());
+                    item.setSeleccionado(!item.isSeleccionado());
+                    getTableView().refresh();
+                });
+            }
+        });
 
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         colDepartamento.setCellValueFactory(new PropertyValueFactory<>("departamento"));
+
+        // ✔ VALORACIÓN EDITABLE
         colValoracion.setCellValueFactory(new PropertyValueFactory<>("valoracion"));
+        colValoracion.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
+        colValoracion.setOnEditCommit(event -> {
+            TrabajadorSeleccion t = event.getRowValue();
+            t.setValoracion(event.getNewValue());
+        });
+
+        // ✔ NOTA EDITABLE
         colNota.setCellValueFactory(new PropertyValueFactory<>("nota"));
+        colNota.setCellFactory(TextFieldTableCell.forTableColumn());
+        colNota.setOnEditCommit(event -> {
+            TrabajadorSeleccion t = event.getRowValue();
+            t.setNota(event.getNewValue());
+        });
 
         btnCargar.setOnAction(e -> cargarTrabajadores());
         btnGuardar.setOnAction(e -> guardarEquipo());
@@ -78,10 +128,17 @@ public class SupervisorEquipoController {
         List<Integer> seleccionados = tablaEquipo.getItems().stream()
                 .filter(TrabajadorSeleccion::isSeleccionado)
                 .map(TrabajadorSeleccion::getId)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()).reversed();
 
+        // ✔ Guardar equipo
         dao.asignarEquipo(idSupervisor, seleccionados, idDpto);
-        mostrar("Equipo guardado correctamente.");
+
+        // ✔ Guardar valoraciones y notas editadas
+        for (TrabajadorSeleccion t : tablaEquipo.getItems()) {
+            dao.actualizarValoracionYNota(t.getId(), t.getValoracion(), t.getNota());
+        }
+
+        mostrar("Cambios guardados correctamente.");
     }
 
     private void volver() {
@@ -98,7 +155,6 @@ public class SupervisorEquipoController {
             e.printStackTrace();
         }
     }
-
 
     private void mostrar(String msg) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);

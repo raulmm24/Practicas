@@ -1,56 +1,95 @@
 package controladores;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import modelo.Usuario;
-import modelo.UsuarioDAO;
+import modelo.ConexionMySQL;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class LoginController {
 
     @FXML private TextField txtUsuario;
     @FXML private PasswordField txtPassword;
 
-    private final UsuarioDAO dao = new UsuarioDAO();
-
     @FXML
-    public void login() {
-        String user = txtUsuario.getText();
-        String pass = txtPassword.getText();
+    private void login(ActionEvent event) {
+        try (Connection con = new ConexionMySQL().conexionBBDD()) {
 
-        Usuario u = dao.validarLogin(user, pass);
+            PreparedStatement ps = con.prepareStatement(
+                    "SELECT rol, id_trabajador FROM usuario WHERE username = ? AND password = ?"
+            );
+            ps.setString(1, txtUsuario.getText());
+            ps.setString(2, txtPassword.getText());
 
-        if (u == null) {
-            System.out.println("Usuario o contraseña incorrectos.");
-            return;
-        }
+            ResultSet rs = ps.executeQuery();
 
-        cargarPantallaPorRol(u);
-    }
+            if (rs.next()) {
 
-    private void cargarPantallaPorRol(Usuario u) {
-        try {
-            String archivoFXML = switch (u.getRol()) {
-                case "Coordinador" -> "/vistas/Coordinador.fxml";
-                case "Supervisor" -> "/vistas/SupervisorEquipo.fxml";
-                case "Trabajador" -> "/vistas/Trabajador.fxml";
-                default -> null;
-            };
+                String rol = rs.getString("rol");
+                int idTrabajador = rs.getInt("id_trabajador");
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(archivoFXML));
-            Parent root = loader.load();
+                switch (rol.toLowerCase()) {
 
-            Stage stage = (Stage) txtUsuario.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
+                    case "coordinador":
+                        cargarVista("/vistas/Coordinador.fxml", event);
+                        break;
+
+                    case "supervisor":
+                        cargarVistaSupervisor("/vistas/SupervisorEquipo.fxml", event, idTrabajador);
+                        break;
+
+                    case "trabajador":
+                        cargarVista("/vistas/PantallaAgente.fxml", event);
+                        break;
+
+                    default:
+                        mostrarError("Rol no reconocido en el sistema.");
+                }
+
+            } else {
+                mostrarError("Usuario o contraseña incorrectos.");
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
+            mostrarError("Error al conectar con la base de datos.");
         }
     }
-}
 
+    private void cargarVista(String ruta, ActionEvent event) throws Exception {
+        Parent root = FXMLLoader.load(getClass().getResource(ruta));
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(new Scene(root));
+        stage.show();
+    }
+
+    private void cargarVistaSupervisor(String ruta, ActionEvent event, int idSupervisor) throws Exception {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(ruta));
+        Parent root = loader.load();
+
+        SupervisorEquipoController controller = loader.getController();
+        controller.setIdSupervisor(idSupervisor);
+
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(new Scene(root));
+        stage.show();
+    }
+
+    private void mostrarError(String mensaje) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error de acceso");
+        alert.setHeaderText(null);
+        alert.setContentText(mensaje);
+        alert.showAndWait();
+    }
+}
