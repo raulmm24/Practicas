@@ -1,53 +1,45 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="controladores.CoordinadorController">
+            fx:controller="controladores.CoordinadorController"
+            stylesheets="@../estilo/estilo.css"
+            prefWidth="900" prefHeight="600">
 
-    <children>
+    <VBox spacing="20" alignment="TOP_CENTER"
+          styleClass="glass-panel"
+          AnchorPane.topAnchor="20"
+          AnchorPane.leftAnchor="20"
+          AnchorPane.rightAnchor="20">
 
-        <VBox spacing="20" AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20"
-              AnchorPane.rightAnchor="20" AnchorPane.bottomAnchor="20">
+        <Label text="Panel del Coordinador" styleClass="titulo"/>
 
-            <!-- BARRA DE BÚSQUEDA -->
-            <HBox spacing="10">
-                <TextField fx:id="txtBuscar" promptText="Buscar trabajador..."
-                           style="-fx-font-size: 14px;"/>
-                <Button text="Buscar" fx:id="btnBuscar"
-                        style="-fx-background-color: #2E86C1; -fx-text-fill: white;"/>
-            </HBox>
+        <HBox spacing="10" alignment="CENTER">
+            <TextField fx:id="txtBuscar" promptText="Buscar trabajador..." prefWidth="250"/>
+            <Button fx:id="btnBuscar" text="Buscar"/>
+            <Button fx:id="btnActualizar" text="Actualizar"/>
+        </HBox>
 
-            <!-- TABLA PRINCIPAL -->
-            <TableView fx:id="tablaCoordinador" prefHeight="350" editable="true">
-                <columns>
-                    <TableColumn fx:id="colNombre" text="Nombre" prefWidth="180"/>
-                    <TableColumn fx:id="colDepartamento" text="Departamento" prefWidth="180"/>
-                    <TableColumn fx:id="colValoracion" text="Valoración" prefWidth="100"/>
-                    <TableColumn fx:id="colNota" text="Nota" prefWidth="250"/>
-                </columns>
-            </TableView>
+        <TableView fx:id="tablaCoordinador" prefWidth="800" prefHeight="350">
+            <columns>
+                <TableColumn fx:id="colNombre" text="Nombre" prefWidth="200"/>
+                <TableColumn fx:id="colDepartamento" text="Departamento" prefWidth="200"/>
+                <TableColumn fx:id="colValoracion" text="Valoración" prefWidth="150"/>
+                <TableColumn fx:id="colNota" text="Nota" prefWidth="250"/>
+            </columns>
+        </TableView>
 
-            <!-- PANEL DE ACCIONES -->
-            <HBox spacing="15" alignment="CENTER_RIGHT">
-                <Button text="Ver detalles" fx:id="btnDetalles"
-                        style="-fx-background-color: #5DADE2; -fx-text-fill: white;"/>
-                <Button text="Asignar tarea" fx:id="btnAsignar"
-                        style="-fx-background-color: #48C9B0; -fx-text-fill: white;"/>
-                <Button text="Actualizar datos" fx:id="btnActualizar"
-                        style="-fx-background-color: #F5B041; -fx-text-fill: white;"/>
-            </HBox>
+        <HBox spacing="20" alignment="CENTER">
+            <Button fx:id="btnAsignar" text="Asignar Tarea" prefWidth="200"/>
+            <Button fx:id="btnVolver" text="Volver" prefWidth="150"/>
+        </HBox>
 
-            <!-- BOTÓN VOLVER AL MENÚ -->
-            <HBox alignment="CENTER_RIGHT">
-                <Button fx:id="btnVolver" text="Volver al menú"
-                        style="-fx-background-color: #AEB6BF; -fx-font-weight: bold; -fx-padding: 8 16;"/>
-            </HBox>
-
-        </VBox>
-
-    </children>
+    </VBox>
 
 </AnchorPane>

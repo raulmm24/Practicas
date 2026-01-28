@@ -1,37 +1,47 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
-<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
             fx:controller="controladores.HistorialValoracionController"
-            prefWidth="800" prefHeight="550">
+            stylesheets="@../estilo/estilo.css"
+            styleClass="data-background"
+            prefWidth="900" prefHeight="600">
 
-    <Label text="Historial de Valoraciones" layoutX="30" layoutY="20"
-           style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+    <VBox spacing="20" alignment="TOP_CENTER"
+          styleClass="glass-panel"
+          AnchorPane.topAnchor="20"
+          AnchorPane.leftAnchor="20"
+          AnchorPane.rightAnchor="20">
 
-    <Label text="Trabajador:" layoutX="30" layoutY="80"/>
-    <ComboBox fx:id="comboTrabajadores" layoutX="120" layoutY="75" prefWidth="250"/>
+        <Label text="Historial de Valoraciones" styleClass="titulo"/>
 
-    <Button text="Cargar historial" layoutX="390" layoutY="75"
-            onAction="#cargarHistorial"/>
+        <HBox spacing="10" alignment="CENTER">
+            <ComboBox fx:id="comboTrabajadores"
+                      promptText="Seleccionar trabajador..."
+                      prefWidth="250"/>
+            <Button fx:id="btnBuscar" text="Buscar" prefWidth="120"/>
+        </HBox>
 
-    <TableView fx:id="tablaHistorial" layoutX="30" layoutY="130"
-               prefWidth="740" prefHeight="360">
+        <TableView fx:id="tablaHistorial" prefWidth="800" prefHeight="350">
+            <columns>
+                <TableColumn fx:id="colFecha" text="Fecha" prefWidth="150"/>
+                <TableColumn fx:id="colAnterior" text="Valoración Anterior" prefWidth="200"/>
+                <TableColumn fx:id="colNueva" text="Valoración Nueva" prefWidth="200"/>
+                <TableColumn fx:id="colNotaAnterior" text="Nota Anterior" prefWidth="250"/>
+                <TableColumn fx:id="colNotaNueva" text="Nota Nueva" prefWidth="250"/>
+            </columns>
+        </TableView>
 
-        <columns>
-            <TableColumn fx:id="colFecha" text="Fecha" prefWidth="120"/>
-            <TableColumn fx:id="colValAnt" text="Valoración Anterior" prefWidth="150"/>
-            <TableColumn fx:id="colValNueva" text="Valoración Nueva" prefWidth="150"/>
-            <TableColumn fx:id="colNotaAnt" text="Nota Anterior" prefWidth="200"/>
-            <TableColumn fx:id="colNotaNueva" text="Nota Nueva" prefWidth="200"/>
-        </columns>
+        <HBox alignment="CENTER_RIGHT" spacing="20">
+            <Button fx:id="btnVolver" text="Volver" styleClass="button" prefWidth="150"/>
+        </HBox>
 
-    </TableView>
-
-    <!-- BOTÓN VOLVER -->
-    <Button fx:id="btnVolver" text="Volver"
-            layoutX="650" layoutY="510" prefWidth="120"
-            onAction="#volver"/>
+    </VBox>
 
 </AnchorPane>
