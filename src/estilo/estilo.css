@@ -17,11 +17,10 @@
 
 
 .label-title, .titulo {
-    -fx-text-fill: #ff6600;
+    -fx-text-fill: #e65c00;
     -fx-font-size: 38px;
     -fx-font-weight: 800;
     -fx-letter-spacing: 1px;
-    -fx-effect: dropshadow(gaussian, rgba(255,102,0,0.9), 25, 0.4, 0, 0);
     -fx-padding: 10 0 20 0;
     -fx-opacity: 0.95;
 }
