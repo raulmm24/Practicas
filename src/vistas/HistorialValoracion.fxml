@@ -1,48 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="controladores.HistorialValoracionController"
             stylesheets="@../estilo/estilo.css"
-            styleClass="data-background"
-            prefWidth="900" prefHeight="600">
+            prefWidth="1100" prefHeight="650">
 
-    <VBox spacing="20" alignment="TOP_CENTER"
-          styleClass="glass-panel"
+    <VBox spacing="25"
           AnchorPane.topAnchor="20"
           AnchorPane.leftAnchor="20"
-          AnchorPane.rightAnchor="20">
+          AnchorPane.rightAnchor="20"
+          AnchorPane.bottomAnchor="20">
 
+        <!-- TÍTULO PRINCIPAL -->
         <Label text="Historial de Valoraciones" styleClass="titulo"/>
 
-        <HBox spacing="10" alignment="CENTER">
+        <!-- SELECTOR TRABAJADOR -->
+        <HBox spacing="10" alignment="CENTER_LEFT">
             <ComboBox fx:id="comboTrabajadores"
                       promptText="Seleccionar trabajador..."
-                      prefWidth="250"/>
-            <Button fx:id="btnBuscar" text="Buscar" prefWidth="120"/>
+                      prefWidth="250"
+                      styleClass="combo-estilado"/>
+
+            <Button fx:id="btnBuscar"
+                    text="Buscar"
+                    prefWidth="120"
+                    styleClass="button"/>
         </HBox>
 
-        <TableView fx:id="tablaHistorial" prefWidth="800" prefHeight="350">
-            <columns>
-                <TableColumn fx:id="colFecha" text="Fecha" prefWidth="150"/>
-                <TableColumn fx:id="colAnterior" text="Valoración Anterior" prefWidth="200"/>
-                <TableColumn fx:id="colNueva" text="Valoración Nueva" prefWidth="200"/>
-                <TableColumn fx:id="colNotaAnterior" text="Nota Anterior" prefWidth="250"/>
-                <TableColumn fx:id="colNotaNueva" text="Nota Nueva" prefWidth="250"/>
-            </columns>
-        </TableView>
+        <!-- BLOQUE PRINCIPAL: 3 COLUMNAS -->
+        <HBox spacing="40" alignment="TOP_CENTER">
 
-        <HBox alignment="CENTER_RIGHT" spacing="20">
-            <Button fx:id="btnVolver" text="Volver" styleClass="button" prefWidth="150"/>
+            <!-- COLUMNA 1: EVOLUCIÓN -->
+            <VBox spacing="10" alignment="TOP_CENTER" prefWidth="450" prefHeight="380">
+
+                <Label text="Evolución" styleClass="subtitulo"/>
+
+                <LineChart fx:id="graficoEvolucion"
+                           prefWidth="450"
+                           prefHeight="330">
+                    <xAxis><CategoryAxis /></xAxis>
+                    <yAxis><NumberAxis /></yAxis>
+                </LineChart>
+            </VBox>
+
+            <!-- COLUMNA 2: DISTRIBUCIÓN -->
+            <VBox spacing="10" alignment="TOP_CENTER" prefWidth="300" prefHeight="380">
+
+                <Label text="Distribución" styleClass="subtitulo"/>
+
+                <PieChart fx:id="graficoDonut"
+                          prefWidth="280"
+                          prefHeight="280"/>
+            </VBox>
+
+            <!-- COLUMNA 3: HISTORIAL -->
+            <VBox spacing="15"
+                  alignment="TOP_CENTER"
+                  prefWidth="350"
+                  prefHeight="380">
+
+                <Label text="Historial" styleClass="subtitulo"/>
+
+                <ComboBox fx:id="comboFechas"
+                          promptText="Seleccionar fecha..."
+                          prefWidth="250"
+                          styleClass="combo-estilado"/>
+            </VBox>
         </HBox>
 
-        <Label fx:id="lblAlerta" text="Alerta: -" styleClass="alerta"/>
+        <!-- ALERTA CENTRADA -->
+        <HBox alignment="CENTER">
+            <Label fx:id="lblAlerta" text="" styleClass="alerta"/>
+        </HBox>
+
+        <!-- BOTÓN SALIR -->
+        <HBox alignment="CENTER">
+            <Button fx:id="btnVolver"
+                    text="⏻ Salir"
+                    prefWidth="150"
+                    styleClass="button"/>
+        </HBox>
 
     </VBox>
 

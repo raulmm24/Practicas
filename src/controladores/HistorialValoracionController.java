@@ -1,11 +1,12 @@
 package controladores;
 
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.PieChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import modelo.HistorialValoracion;
@@ -13,7 +14,7 @@ import modelo.HistorialValoracionDAO;
 import modelo.Trabajador;
 import modelo.TrabajadorDAO;
 
-import java.util.List;
+import java.util.*;
 
 public class HistorialValoracionController {
 
@@ -21,12 +22,11 @@ public class HistorialValoracionController {
     @FXML private Button btnBuscar;
     @FXML private Button btnVolver;
 
-    @FXML private TableView<HistorialValoracion> tablaHistorial;
-    @FXML private TableColumn<HistorialValoracion, String> colFecha;
-    @FXML private TableColumn<HistorialValoracion, Double> colAnterior;
-    @FXML private TableColumn<HistorialValoracion, Double> colNueva;
-    @FXML private TableColumn<HistorialValoracion, String> colNotaAnterior;
-    @FXML private TableColumn<HistorialValoracion, String> colNotaNueva;
+    @FXML private LineChart<String, Number> graficoEvolucion;
+    @FXML private PieChart graficoDonut;
+
+    @FXML private ComboBox<String> comboFechas;
+
     @FXML private Label lblAlerta;
 
     private final HistorialValoracionDAO historialDAO = new HistorialValoracionDAO();
@@ -35,36 +35,17 @@ public class HistorialValoracionController {
     @FXML
     public void initialize() {
 
-        // Configurar columnas
-        colFecha.setCellValueFactory(c ->
-                new SimpleStringProperty(c.getValue().getFecha()));
-
-        colAnterior.setCellValueFactory(c ->
-                new SimpleDoubleProperty(c.getValue().getValoracionAnterior()).asObject());
-
-        colNueva.setCellValueFactory(c ->
-                new SimpleDoubleProperty(c.getValue().getValoracionNueva()).asObject());
-
-        colNotaAnterior.setCellValueFactory(c ->
-                new SimpleStringProperty(c.getValue().getNotaAnterior()));
-
-        colNotaNueva.setCellValueFactory(c ->
-                new SimpleStringProperty(c.getValue().getNotaNueva()));
-
         comboTrabajadores.getItems().setAll(trabajadorDAO.obtenerTrabajadores());
 
-        comboTrabajadores.setOnAction(e -> {
-            Trabajador t = comboTrabajadores.getValue();
-            if (t != null) cargarHistorial(t.getId());
-        });
+        comboTrabajadores.setOnAction(e -> cargarSeleccionado());
+        btnBuscar.setOnAction(e -> cargarSeleccionado());
 
-        btnBuscar.setOnAction(e -> {
-            Trabajador t = comboTrabajadores.getValue();
-            if (t != null) cargarHistorial(t.getId());
-        });
-
-        // Botón Volver (corregido)
         btnVolver.setOnAction(e -> volverAlLogin());
+    }
+
+    private void cargarSeleccionado() {
+        Trabajador t = comboTrabajadores.getValue();
+        if (t != null) cargarHistorial(t.getId());
     }
 
     private void volverAlLogin() {
@@ -84,21 +65,137 @@ public class HistorialValoracionController {
 
     private void cargarHistorial(int idTrabajador) {
         List<HistorialValoracion> historial = historialDAO.obtenerHistorialPorTrabajador(idTrabajador);
-        tablaHistorial.getItems().setAll(historial);
 
-        String alerta = generarAlerta(historial);
-        lblAlerta.setText(alerta);
+        actualizarGraficoEvolucion(historial);
+        actualizarGraficoDonut(historial);
+        cargarFechasEnCombo(historial);
+
+        lblAlerta.setText(generarAlerta(historial));
     }
 
-    public void setIdTrabajador(int id) {
-        for (Trabajador t : comboTrabajadores.getItems()) {
-            if (t.getId() == id) {
-                comboTrabajadores.setValue(t);
-                break;
-            }
+    private void actualizarGraficoEvolucion(List<HistorialValoracion> historial) {
+        graficoEvolucion.getData().clear();
+        graficoEvolucion.setLegendVisible(false);
+        graficoEvolucion.getXAxis().setTickLabelsVisible(false);
+        graficoEvolucion.getXAxis().setOpacity(0);
+        graficoEvolucion.getYAxis().setTickLabelsVisible(false);
+        graficoEvolucion.getYAxis().setOpacity(0);
+
+        XYChart.Series<String, Number> serie = new XYChart.Series<>();
+        serie.setName("");
+
+        for (HistorialValoracion h : historial) {
+            String fecha = h.getFecha().split(" ")[0];
+            serie.getData().add(new XYChart.Data<>(fecha, h.getValoracionNueva()));
         }
-        cargarHistorial(id);
+
+        graficoEvolucion.getData().add(serie);
     }
+
+    private void actualizarGraficoDonut(List<HistorialValoracion> historial) {
+        graficoDonut.getData().clear();
+        graficoDonut.setLegendVisible(false);
+
+        int mejoras = 0, bajadas = 0, neutros = 0;
+
+        for (int i = 1; i < historial.size(); i++) {
+            double antes = historial.get(i).getValoracionNueva();
+            double despues = historial.get(i - 1).getValoracionNueva();
+
+            if (despues > antes) mejoras++;
+            else if (despues < antes) bajadas++;
+            else neutros++;
+        }
+
+        graficoDonut.getData().add(new PieChart.Data("", mejoras));
+        graficoDonut.getData().add(new PieChart.Data("", bajadas));
+        graficoDonut.getData().add(new PieChart.Data("", neutros));
+    }
+
+    private void cargarFechasEnCombo(List<HistorialValoracion> historial) {
+        comboFechas.getItems().clear();
+
+        Set<String> fechas = new LinkedHashSet<>();
+        for (HistorialValoracion h : historial) {
+            fechas.add(h.getFecha().split(" ")[0]);
+        }
+
+        comboFechas.getItems().addAll(fechas);
+
+        comboFechas.setOnAction(e -> {
+            String fechaSeleccionada = comboFechas.getValue();
+            if (fechaSeleccionada == null) return;
+
+            for (HistorialValoracion h : historial) {
+                if (h.getFecha().startsWith(fechaSeleccionada)) {
+                    mostrarPopupDetalle(h);
+                    break;
+                }
+            }
+        });
+    }
+
+    private void mostrarPopupDetalle(HistorialValoracion h) {
+        double antes = h.getValoracionAnterior();
+        double despues = h.getValoracionNueva();
+
+        String icono;
+        String color;
+
+        if (despues > antes) {
+            icono = "🟢⬆ Mejora";
+            color = "#2ecc71"; // verde
+        } else if (despues < antes) {
+            icono = "🔴⬇ Bajada";
+            color = "#e74c3c"; // rojo
+        } else {
+            icono = "⚪➖ Sin cambios";
+            color = "#bdc3c7"; // gris
+        }
+
+        String contenido =
+                icono + "\n\n" +
+                        "📅 " + h.getFecha().split(" ")[0] + "\n\n" +
+                        "Valoración: " + antes + " → " + despues + "\n\n" +
+                        "Nota anterior: " + h.getNotaAnterior() + "\n" +
+                        "Nota nueva: " + h.getNotaNueva();
+
+        Alert alerta = new Alert(Alert.AlertType.INFORMATION);
+        alerta.setTitle("Detalle de valoración");
+        alerta.setHeaderText(null);
+
+        // Usamos un Label como contenido para aplicar estilo directamente
+        Label contenidoLabel = new Label(contenido);
+        contenidoLabel.setStyle(
+                "-fx-text-fill: white;" +
+                        "-fx-font-size: 16px;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-line-spacing: 4px;"
+        );
+        alerta.getDialogPane().setContent(contenidoLabel);
+
+        // Fondo oscuro del popup
+        alerta.getDialogPane().setStyle(
+                "-fx-background-color: #1e1e1e;" +
+                        "-fx-background-radius: 12;" +
+                        "-fx-border-radius: 12;" +
+                        "-fx-border-color: " + color + ";" +
+                        "-fx-border-width: 2;"
+        );
+
+        // Estilo del botón Aceptar
+        alerta.getDialogPane().lookupButton(ButtonType.OK).setStyle(
+                "-fx-background-color: " + color + ";" +
+                        "-fx-text-fill: black;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-font-size: 14px;" +
+                        "-fx-background-radius: 8;" +
+                        "-fx-cursor: hand;"
+        );
+
+        alerta.showAndWait();
+    }
+
 
     private String generarAlerta(List<HistorialValoracion> historial) {
 
@@ -109,28 +206,17 @@ public class HistorialValoracionController {
         double ultima = historial.get(0).getValoracionNueva();
         double anterior = historial.get(1).getValoracionNueva();
 
-        // 1. Bajada de rendimiento
         if (ultima < anterior) {
             return "⚠ El trabajador ha bajado su rendimiento.";
         }
 
-        // 2. Mejora continua (3 mejoras seguidas)
-        if (historial.size() >= 3) {
-            double v1 = historial.get(0).getValoracionNueva();
-            double v2 = historial.get(1).getValoracionNueva();
-            double v3 = historial.get(2).getValoracionNueva();
+        if (ultima > anterior) {
+            return "📈 El trabajador ha mejorado su rendimiento."; }
 
-            if (v1 > v2 && v2 > v3) {
-                return "📈 El trabajador está mejorando de forma constante.";
-            }
-        }
-
-        // 3. Caída brusca (> 2 puntos)
         if (anterior - ultima >= 2) {
             return "🚨 Caída brusca detectada en la valoración.";
         }
 
         return "Sin alertas relevantes.";
     }
-
 }

@@ -29,7 +29,7 @@ public class HistorialValoracionDAO {
 
             while (rs.next()) {
                 lista.add(new HistorialValoracion(
-                        rs.getDate("fecha").toString(),
+                        rs.getString("fecha"),
                         rs.getDouble("valoracion_anterior"),
                         rs.getDouble("valoracion_nueva"),
                         rs.getString("nota_anterior"),
