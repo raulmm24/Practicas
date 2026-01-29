@@ -18,7 +18,14 @@ public class TrabajadorDAO {
 
         if (conn == null) return lista;
 
-        String sql = "SELECT * FROM trabajador";
+        String sql =
+                "SELECT t.id_empleado, t.nombre, d.nombre AS departamento, " +
+                        "IFNULL(v.valoracion, 0) AS valoracion, " +
+                        "IFNULL(v.nota_trabajador, '') AS nota, " +
+                        "t.id_supervisor " +
+                        "FROM trabajador t " +
+                        "JOIN departamento d ON t.departamento = d.id_dpto " +
+                        "LEFT JOIN valoracion v ON t.id_empleado = v.id_trabajador";
 
         try (PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
@@ -27,9 +34,9 @@ public class TrabajadorDAO {
                 lista.add(new Trabajador(
                         rs.getInt("id_empleado"),
                         rs.getString("nombre"),
-                        String.valueOf(rs.getInt("departamento")),
-                        0.0,
-                        "",
+                        rs.getString("departamento"),   // ← ahora es el nombre real
+                        rs.getDouble("valoracion"),
+                        rs.getString("nota"),
                         rs.getInt("id_supervisor")
                 ));
             }
@@ -47,7 +54,15 @@ public class TrabajadorDAO {
 
         if (conn == null) return lista;
 
-        String sql = "SELECT * FROM trabajador WHERE nombre LIKE ?";
+        String sql =
+                "SELECT t.id_empleado, t.nombre, d.nombre AS departamento, " +
+                        "IFNULL(v.valoracion, 0) AS valoracion, " +
+                        "IFNULL(v.nota_trabajador, '') AS nota, " +
+                        "t.id_supervisor " +
+                        "FROM trabajador t " +
+                        "JOIN departamento d ON t.departamento = d.id_dpto " +
+                        "LEFT JOIN valoracion v ON t.id_empleado = v.id_trabajador " +
+                        "WHERE t.nombre LIKE ?";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, "%" + filtro + "%");
@@ -55,11 +70,11 @@ public class TrabajadorDAO {
 
             while (rs.next()) {
                 lista.add(new Trabajador(
-                        rs.getInt("id_empleado"),                    // ← corregido
+                        rs.getInt("id_empleado"),
                         rs.getString("nombre"),
-                        String.valueOf(rs.getInt("departamento")),   // ← si departamento es int
-                        0.0,
-                        "",
+                        rs.getString("departamento"),
+                        rs.getDouble("valoracion"),
+                        rs.getString("nota"),
                         rs.getInt("id_supervisor")
                 ));
             }
@@ -71,16 +86,19 @@ public class TrabajadorDAO {
         return lista;
     }
 
+
     // 3. Actualizar valoración y nota
-    public void actualizarValoracionYNota(int id, double valoracion, String nota) {
+    public void actualizarValoracionYNota(int idTrabajador, double valoracion, String nota) {
         if (conn == null) return;
 
-        String sql = "UPDATE trabajador SET valoracion = ?, nota = ? WHERE id_empleado = ?"; // ← corregido
+        String sql =
+                "REPLACE INTO valoracion (id_trabajador, valoracion, nota_trabajador) " +
+                        "VALUES (?, ?, ?)";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setDouble(1, valoracion);
-            ps.setString(2, nota);
-            ps.setInt(3, id);
+            ps.setInt(1, idTrabajador);
+            ps.setDouble(2, valoracion);
+            ps.setString(3, nota);
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

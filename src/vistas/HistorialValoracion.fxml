@@ -42,6 +42,8 @@
             <Button fx:id="btnVolver" text="Volver" styleClass="button" prefWidth="150"/>
         </HBox>
 
+        <Label fx:id="lblAlerta" text="Alerta: -" styleClass="alerta"/>
+
     </VBox>
 
 </AnchorPane>

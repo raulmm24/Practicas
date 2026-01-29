@@ -26,7 +26,6 @@ public class SupervisorEquipoController {
     @FXML private TableColumn<TrabajadorSeleccion, String> colDepartamento;
     @FXML private TableColumn<TrabajadorSeleccion, Double> colValoracion;
     @FXML private TableColumn<TrabajadorSeleccion, String> colNota;
-    @FXML private TableColumn<TrabajadorSeleccion, String> colSupervisor;
 
     @FXML private Button btnCargar;
     @FXML private Button btnGuardar;
@@ -82,7 +81,6 @@ public class SupervisorEquipoController {
         colDepartamento.setCellValueFactory(c -> c.getValue().departamentoProperty());
         colValoracion.setCellValueFactory(c -> c.getValue().valoracionProperty().asObject());
         colNota.setCellValueFactory(c -> c.getValue().notaProperty());
-        colSupervisor.setCellValueFactory(c -> c.getValue().supervisorProperty());
 
         // Valoración editable
         colValoracion.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));

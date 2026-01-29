@@ -40,7 +40,7 @@ public class SupervisorDAO {
         if (conn == null) return lista;
 
         String sql =
-                "SELECT t.id_empleado, t.nombre, d.nombre AS departamento, " +
+                "SELECT t.id_empleado AS id, t.nombre, d.nombre AS departamento, " +
                         "IFNULL(v.valoracion, 0) AS valoracion, " +
                         "IFNULL(v.nota_trabajador, '') AS nota, " +
                         "IFNULL(t.id_supervisor, 0) AS supervisor " +
@@ -55,7 +55,7 @@ public class SupervisorDAO {
 
             while (rs.next()) {
                 lista.add(new TrabajadorSeleccion(
-                        rs.getInt("id_empleado"),
+                        rs.getInt("id"),
                         rs.getString("nombre"),
                         rs.getString("departamento"),
                         rs.getDouble("valoracion"),
@@ -70,6 +70,7 @@ public class SupervisorDAO {
 
         return lista;
     }
+
 
     // 3. Asignar equipo a supervisor por nombre de departamento
     public void asignarEquipo(int idSupervisor, List<Integer> trabajadores, String nombreDepartamento) {

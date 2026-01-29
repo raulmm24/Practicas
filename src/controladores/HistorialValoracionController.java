@@ -6,15 +6,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import modelo.HistorialValoracion;
 import modelo.HistorialValoracionDAO;
 import modelo.Trabajador;
 import modelo.TrabajadorDAO;
+
+import java.util.List;
 
 public class HistorialValoracionController {
 
@@ -28,6 +27,7 @@ public class HistorialValoracionController {
     @FXML private TableColumn<HistorialValoracion, Double> colNueva;
     @FXML private TableColumn<HistorialValoracion, String> colNotaAnterior;
     @FXML private TableColumn<HistorialValoracion, String> colNotaNueva;
+    @FXML private Label lblAlerta;
 
     private final HistorialValoracionDAO historialDAO = new HistorialValoracionDAO();
     private final TrabajadorDAO trabajadorDAO = new TrabajadorDAO();
@@ -83,9 +83,11 @@ public class HistorialValoracionController {
     }
 
     private void cargarHistorial(int idTrabajador) {
-        tablaHistorial.getItems().setAll(
-                historialDAO.obtenerHistorialPorTrabajador(idTrabajador)
-        );
+        List<HistorialValoracion> historial = historialDAO.obtenerHistorialPorTrabajador(idTrabajador);
+        tablaHistorial.getItems().setAll(historial);
+
+        String alerta = generarAlerta(historial);
+        lblAlerta.setText(alerta);
     }
 
     public void setIdTrabajador(int id) {
@@ -97,4 +99,38 @@ public class HistorialValoracionController {
         }
         cargarHistorial(id);
     }
+
+    private String generarAlerta(List<HistorialValoracion> historial) {
+
+        if (historial.size() < 2) {
+            return "Sin datos suficientes para generar alertas.";
+        }
+
+        double ultima = historial.get(0).getValoracionNueva();
+        double anterior = historial.get(1).getValoracionNueva();
+
+        // 1. Bajada de rendimiento
+        if (ultima < anterior) {
+            return "⚠ El trabajador ha bajado su rendimiento.";
+        }
+
+        // 2. Mejora continua (3 mejoras seguidas)
+        if (historial.size() >= 3) {
+            double v1 = historial.get(0).getValoracionNueva();
+            double v2 = historial.get(1).getValoracionNueva();
+            double v3 = historial.get(2).getValoracionNueva();
+
+            if (v1 > v2 && v2 > v3) {
+                return "📈 El trabajador está mejorando de forma constante.";
+            }
+        }
+
+        // 3. Caída brusca (> 2 puntos)
+        if (anterior - ultima >= 2) {
+            return "🚨 Caída brusca detectada en la valoración.";
+        }
+
+        return "Sin alertas relevantes.";
+    }
+
 }
