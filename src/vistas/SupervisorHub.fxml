@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane prefHeight="600.0" prefWidth="900.0"
+           styleClass="hub-background"
+           stylesheets="/estilo/hub.css"
+           xmlns="http://javafx.com/javafx/8"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="controladores.SupervisorHubController">
+
+    <VBox alignment="CENTER" spacing="50">
+        <Label style="-fx-font-size: 35; -fx-font-weight: bold; -fx-text-fill: #1e293b;" text="Panel de Control" />
+
+        <HBox alignment="CENTER" spacing="40">
+            <VBox fx:id="cardEquipo" onMouseClicked="#irAGestionEquipo" styleClass="card-seleccion">
+                <Label style="-fx-font-size: 50;" text="👥" />
+                <Label style="-fx-font-size: 20; -fx-font-weight: bold;" text="Gestión de Equipo" />
+                <Label style="-fx-text-fill: #64748b;" text="Consulta valoraciones y desempeño." textAlignment="CENTER" />
+            </VBox>
+
+            <VBox fx:id="cardObjetivos" onMouseClicked="#irAObjetivos" styleClass="card-seleccion">
+                <Label style="-fx-font-size: 50;" text="🎯" />
+                <Label style="-fx-font-size: 20; -fx-font-weight: bold;" text="Objetivos Depto." />
+                <Label style="-fx-text-fill: #64748b;" text="Define y supervisa metas mensuales." textAlignment="CENTER" />
+            </VBox>
+        </HBox>
+
+        <Button onAction="#cerrarSesion" styleClass="button-ghost" text="⏻ Salir" />
+    </VBox>
+</StackPane>

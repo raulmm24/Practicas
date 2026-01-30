@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="700.0" prefWidth="1000.0"
+            styleClass="data-background"
+            stylesheets="@../estilo/objetivos.css"
+            xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controladores.ObjetivosController">
+
+    <VBox spacing="25" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="30.0"
+          AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="30.0" styleClass="glass-panel">
+
+        <HBox alignment="CENTER_LEFT" spacing="20">
+            <VBox spacing="5">
+                <Label styleClass="titulo" text="Metas por Departamento" />
+                <Label style="-fx-text-fill: #64748b;" text="Supervisa y actualiza los KPIs de cada área." />
+            </VBox>
+
+            <Region HBox.hgrow="ALWAYS" />
+
+            <ComboBox fx:id="comboDepartamento" prefWidth="240.0"
+                      promptText="Seleccionar Departamento"
+                      styleClass="combo-box-moderno" />
+
+            <Button fx:id="btnNuevoObjetivo" styleClass="button-primary" text="+ Crear Meta" />
+        </HBox>
+
+        <Separator />
+
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;" VBox.vgrow="ALWAYS">
+            <content>
+                <VBox fx:id="contenedorObjetivos" spacing="20" style="-fx-padding: 10 20 10 0;" />
+            </content>
+        </ScrollPane>
+
+        <HBox alignment="CENTER_RIGHT">
+            <Button fx:id="btnVolver" styleClass="button-ghost" text="← Volver al Panel Principal" />
+        </HBox>
+
+    </VBox>
+</AnchorPane>

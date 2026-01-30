@@ -1,0 +1,94 @@
+/* FONDO GENERAL */
+.data-background {
+    -fx-background-color: linear-gradient(to bottom right, #f1f5f9, #cbd5e1);
+}
+
+.glass-panel {
+    -fx-background-color: rgba(255, 255, 255, 0.95);
+    -fx-background-radius: 20;
+    -fx-padding: 30;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 15, 0, 0, 5);
+}
+
+.titulo {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #0f172a;
+}
+
+/* BUSCADOR CÁPSULA */
+.combo-box-moderno {
+    -fx-background-color: white;
+    -fx-background-radius: 25;
+    -fx-border-radius: 25;
+    -fx-border-color: #cbd5e1;
+    -fx-border-width: 1.5;
+    -fx-padding: 5 15;
+}
+
+.combo-box-moderno:hover {
+    -fx-border-color: #3b82f6;
+}
+
+/* TARJETA DE OBJETIVO */
+.card-objetivo {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 15;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 10, 0, 0, 5);
+}
+
+/* TÍTULO DEL OBJETIVO - VISIBILIDAD MÁXIMA */
+.label-titulo-meta {
+    -fx-font-size: 17px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1e293b; /* Color oscuro legible */
+}
+
+.label-info-footer {
+    -fx-text-fill: #64748b;
+    -fx-font-size: 11px;
+}
+
+/* BARRA DE PROGRESO */
+.progress-bar {
+    -fx-pref-height: 10;
+}
+.progress-bar .track {
+    -fx-background-color: #f1f5f9;
+    -fx-background-radius: 10;
+}
+.progress-bar .bar {
+    -fx-background-radius: 10;
+}
+
+/* BOTONES */
+.button-primary {
+    -fx-background-color: #f97316;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 25;
+    -fx-padding: 10 25;
+    -fx-cursor: hand;
+}
+
+.button-ghost {
+    -fx-background-color: transparent;
+    -fx-background-radius: 25;
+    -fx-border-radius: 25;
+    -fx-border-color: #cbd5e1;
+    -fx-border-width: 1.5;
+    -fx-text-fill: #64748b;
+    -fx-font-weight: bold;
+    -fx-padding: 10 25;
+    -fx-cursor: hand;
+}
+
+.btn-delete {
+    -fx-background-color: #fee2e2;
+    -fx-text-fill: #ef4444;
+    -fx-background-radius: 8;
+    -fx-font-weight: bold;
+    -fx-padding: 5 10;
+    -fx-cursor: hand;
+}
