@@ -71,7 +71,7 @@
           AnchorPane.rightAnchor="30">
 
         <Button fx:id="btnGuardar" text="Guardar cambios" styleClass="button-primary"/>
-        <Button fx:id="btnVolver" text="Volver" styleClass="button-ghost"/>
+        <Button fx:id="btnVolver" text="⏻ Salir" styleClass="button-ghost"/>
     </HBox>
 
 </AnchorPane>

@@ -1,8 +1,13 @@
-/* FONDO Y PANEL CENTRAL */
+/* =========================================
+   ESTILO VANGUARDISTA - TRABAJADOR
+   ========================================= */
+
+/* FONDO DINÁMICO CON DEGRADADO SUAVE */
 .data-background {
     -fx-background-color: linear-gradient(to bottom right, #f0f4f8, #d9e2ec, #bcccdc);
 }
 
+/* PANEL CENTRAL DE CRISTAL (GLASSMORPHISM) */
 .glass-panel {
     -fx-background-color: rgba(255, 255, 255, 0.3);
     -fx-background-radius: 25;
@@ -12,79 +17,142 @@
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 20, 0, 0, 10);
 }
 
-/* BOTONES VANGUARDISTAS */
+/* TÍTULO MODERNO Y MINIMALISTA */
+.titulo {
+    -fx-font-size: 28px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #243b53;
+    -fx-letter-spacing: 1px;
+}
+
+/* INPUT DE BÚSQUEDA CAPSULAR */
+.text-field {
+    -fx-background-color: rgba(255, 255, 255, 0.7);
+    -fx-background-radius: 25;
+    -fx-border-radius: 25;
+    -fx-border-color: transparent;
+    -fx-padding: 12 20;
+    -fx-font-size: 14px;
+    -fx-prompt-text-fill: #94a3b8;
+}
+
+.text-field:focused {
+    -fx-background-color: white;
+    -fx-border-color: #f97316;
+    -fx-effect: dropshadow(three-pass-box, rgba(249, 115, 22, 0.2), 10, 0, 0, 0);
+}
+
+/* =========================================
+   BOTONES
+   ========================================= */
+
+/* BOTÓN CONSULTAR (Acción Primaria) */
 .button-primary {
     -fx-background-color: linear-gradient(to bottom right, #f97316, #ea580c);
     -fx-text-fill: white;
     -fx-font-weight: 900;
-    -fx-background-radius: 20;
-    -fx-padding: 10 25;
+    -fx-background-radius: 25;
+    -fx-padding: 12 30;
     -fx-cursor: hand;
-    -fx-effect: dropshadow(three-pass-box, rgba(234, 88, 12, 0.3), 10, 0, 0, 5);
+    -fx-effect: dropshadow(three-pass-box, rgba(234, 88, 12, 0.3), 12, 0, 0, 6);
 }
 
 .button-primary:hover {
     -fx-background-color: linear-gradient(to bottom right, #fb923c, #f97316);
-    -fx-effect: dropshadow(three-pass-box, rgba(234, 88, 12, 0.5), 15, 0, 0, 8);
+    -fx-effect: dropshadow(three-pass-box, rgba(234, 88, 12, 0.5), 18, 0, 0, 8);
 }
 
+/* BOTÓN VOLVER (Acción Secundaria - Estilo Ghost) */
 .button-ghost {
     -fx-background-color: rgba(255, 255, 255, 0.2);
     -fx-text-fill: #475569;
     -fx-font-weight: 700;
-    -fx-background-radius: 20;
+    -fx-background-radius: 25;
     -fx-border-color: rgba(71, 85, 105, 0.3);
     -fx-border-width: 1.5;
-    -fx-border-radius: 20;
-    -fx-padding: 10 25;
+    -fx-padding: 12 30;
+    -fx-cursor: hand;
 }
 
 .button-ghost:hover {
     -fx-background-color: rgba(255, 255, 255, 0.5);
     -fx-border-color: #f97316;
+    -fx-text-fill: #1e293b;
 }
 
-/* LA CARTA DEL TRABAJADOR (Ajuste de Margen y Aire) */
+/* =========================================
+   LA CARTA DEL TRABAJADOR (CARD)
+   ========================================= */
+
 .card-trabajador {
     -fx-background-color: white;
     -fx-background-radius: 20;
-
-    /* ESPACIADO INTERNO: Aire entre el borde y el texto */
-    -fx-padding: 30 35 30 35;
-
-    /* ESPACIADO EXTERNO: Margen en todos los lados para que no se pegue a nada */
-    -fx-margin: 20;
-
+    -fx-padding: 30;
     -fx-spacing: 20;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 15, 0, 0, 8);
-
-    /* Tamaño optimizado para que se vea bien en cualquier resolución */
-    -fx-min-width: 580;
-    -fx-max-width: 750;
-    -fx-alignment: TOP_LEFT;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.06), 15, 0, 0, 10);
+    -fx-min-width: 600;
 }
 
-/* Ajuste adicional para el contenedor que guarda las cartas */
-#contenedorResultados {
-    -fx-padding: 20 40 40 40; /* Margen general de la zona de resultados */
-    -fx-spacing: 25;           /* Espacio vertical entre una carta y otra */
-}
-
+/* BADGE DE VALORACIÓN (Cápsula) */
 .badge-valoracion {
     -fx-background-color: linear-gradient(to right, #f97316, #ea580c);
     -fx-text-fill: white;
     -fx-font-weight: 900;
+    -fx-font-size: 14px;
     -fx-padding: 8 18;
     -fx-background-radius: 25;
+    -fx-effect: dropshadow(three-pass-box, rgba(234, 88, 12, 0.2), 8, 0, 0, 3);
 }
 
+/* BURBUJA DE NOTA / COMENTARIOS */
 .nota-text {
     -fx-font-size: 13px;
     -fx-text-fill: #475569;
     -fx-background-color: #f8fafc;
-    -fx-background-radius: 12;
-    -fx-padding: 15;
+    -fx-background-radius: 15;
+    -fx-padding: 20;
     -fx-border-color: #e2e8f0;
     -fx-border-width: 1;
-    -fx-border-radius: 12;
+    -fx-border-radius: 15;
+    -fx-font-style: italic;
+}
+
+/* =========================================
+   ELEMENTOS DE CARGA Y PROGRESO
+   ========================================= */
+
+/* INDICADOR DE CARGA (SPINNER) */
+.progress-indicator {
+    -fx-progress-color: #f97316;
+}
+
+/* BARRA DE PROGRESO DE DESEMPEÑO */
+.progress-bar {
+    -fx-pref-height: 12;
+}
+
+.progress-bar .track {
+    -fx-background-color: #f1f5f9;
+    -fx-background-radius: 10;
+}
+
+.progress-bar .bar {
+    -fx-background-color: linear-gradient(to right, #fb923c, #f97316);
+    -fx-background-radius: 10;
+}
+
+/* SCROLLPANE TRANSPARENTE */
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+/* SEPARADOR ELEGANTE */
+.separator .line {
+    -fx-border-color: #f1f5f9;
+    -fx-border-width: 1;
 }

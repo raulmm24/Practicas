@@ -27,6 +27,6 @@
             <VBox fx:id="contenedorResultados" spacing="15" style="-fx-padding: 10;"/>
         </ScrollPane>
 
-        <Button fx:id="btnVolver" text="Volver al Inicio" prefWidth="200" styleClass="button-ghost"/>
+        <Button fx:id="btnVolver" text="⏻ Salir" prefWidth="200" styleClass="button-ghost"/>
     </VBox>
 </AnchorPane>
