@@ -21,12 +21,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static javafx.scene.layout.TilePane.setMargin;
-
 public class SupervisorEquipoController {
 
     @FXML private ComboBox<String> comboDepartamento;
-    @FXML private GridPane gridTrabajadores;
+
+    // CAMBIO: Ahora usamos un VBox para la lista vertical
+    @FXML private VBox vboxTrabajadores;
+
     @FXML private Button btnCargar, btnGuardar, btnVolver, btnAñadir, btnEliminarSeleccionado, btnTogglePanel;
     @FXML private TextField txtBuscar;
     @FXML private VBox panelLateral;
@@ -41,10 +42,9 @@ public class SupervisorEquipoController {
 
     @FXML
     public void initialize() {
-        // Cargar departamentos al inicio
         comboDepartamento.getItems().setAll(dao.obtenerDepartamentos());
 
-        // --- MEJORA DE LA LISTA LATERAL (Cápsulas de cristal) ---
+        // Mejora visual de la lista lateral
         listaTrabajadoresPanel.setCellFactory(lv -> new ListCell<>() {
             @Override
             protected void updateItem(TrabajadorSeleccion item, boolean empty) {
@@ -52,16 +52,13 @@ public class SupervisorEquipoController {
                 if (empty || item == null) {
                     setText(null);
                     setGraphic(null);
-                    setStyle("-fx-background-color: transparent; -fx-border-color: transparent;");
+                    setStyle("-fx-background-color: transparent;");
                 } else {
                     setText("👤  " + item.getNombre());
-                    // Aseguramos que el estilo de margen se aplique a cada celda para que no se peguen
-                    setMargin(this, new Insets(5, 0, 5, 0));
                 }
             }
         });
 
-        // Listeners de botones
         btnCargar.setOnAction(e -> cargarTrabajadores());
         btnGuardar.setOnAction(e -> guardarEquipo());
         btnVolver.setOnAction(e -> volver());
@@ -69,10 +66,9 @@ public class SupervisorEquipoController {
         btnEliminarSeleccionado.setOnAction(e -> eliminarSeleccionadoPanel());
         btnTogglePanel.setOnAction(e -> togglePanelLateral());
 
-        // Buscador Dinámico
         txtBuscar.textProperty().addListener((obs, oldV, newV) -> filtrarTrabajadores(newV));
 
-        // Animación de expansión para el buscador
+        // Animación buscador
         txtBuscar.focusedProperty().addListener((obs, wasFocused, isFocused) -> {
             Timeline timeline = new Timeline();
             KeyValue kv = new KeyValue(txtBuscar.prefWidthProperty(), isFocused ? 300 : 220);
@@ -92,7 +88,7 @@ public class SupervisorEquipoController {
         listaActual = dao.obtenerTrabajadoresPorDepartamento(nombreDpto);
         listaFiltrada = new FilteredList<>(FXCollections.observableArrayList(listaActual), t -> true);
 
-        refrescarGrid();
+        refrescarListaVertical();
         refrescarPanelLateral();
     }
 
@@ -100,51 +96,50 @@ public class SupervisorEquipoController {
         if (listaFiltrada == null) return;
         String f = filtro == null ? "" : filtro.toLowerCase().trim();
         listaFiltrada.setPredicate(t -> f.isEmpty() || t.getNombre().toLowerCase().contains(f));
-        refrescarGrid();
+        refrescarListaVertical();
     }
 
-    private void refrescarGrid() {
-        gridTrabajadores.getChildren().clear();
-        int col = 0, row = 0;
+    // CAMBIO: Lógica para llenar el VBox verticalmente
+    private void refrescarListaVertical() {
+        vboxTrabajadores.getChildren().clear();
         double delay = 0;
 
         for (TrabajadorSeleccion t : listaFiltrada) {
             Pane tarjeta = crearTarjetaVisual(t);
-            gridTrabajadores.add(tarjeta, col, row);
+            vboxTrabajadores.getChildren().add(tarjeta);
 
-            // Animación de entrada suave (Fade + Slide)
+            // Animación de cascada
             tarjeta.setOpacity(0);
-            tarjeta.setTranslateY(15);
-            FadeTransition ft = new FadeTransition(Duration.millis(400), tarjeta);
+            tarjeta.setTranslateY(10);
+            FadeTransition ft = new FadeTransition(Duration.millis(300), tarjeta);
             ft.setToValue(1);
-            ft.setDelay(Duration.millis(delay));
-            TranslateTransition tt = new TranslateTransition(Duration.millis(400), tarjeta);
+            TranslateTransition tt = new TranslateTransition(Duration.millis(300), tarjeta);
             tt.setToY(0);
-            tt.setDelay(Duration.millis(delay));
 
-            new ParallelTransition(ft, tt).play();
+            ParallelTransition pt = new ParallelTransition(ft, tt);
+            pt.setDelay(Duration.millis(delay));
+            pt.play();
 
-            delay += 50;
-            col++;
-            if (col == 3) { col = 0; row++; }
+            delay += 40;
         }
     }
 
     private Pane crearTarjetaVisual(TrabajadorSeleccion t) {
-        VBox tarjeta = new VBox(10); // Espaciado vertical definido en CSS (.tarjeta-visual)
-        tarjeta.getStyleClass().add("tarjeta-visual");
-        tarjeta.setPrefWidth(380);
+        VBox tarjeta = new VBox(12);
+        tarjeta.getStyleClass().add("card-objetivo"); // Usamos tu clase de estilo premium
+        tarjeta.setMaxWidth(Double.MAX_VALUE); // Para que ocupe todo el ancho del VBox
+        tarjeta.setPadding(new Insets(15, 20, 15, 20));
         tarjeta.setUserData(t);
 
-        // 1. Cabecera (Dpto, Nombre y Checkbox)
-        HBox cabecera = new HBox();
-        cabecera.setAlignment(Pos.CENTER_LEFT);
+        // 1. Fila superior: Info y Selección
+        HBox filaCabecera = new HBox();
+        filaCabecera.setAlignment(Pos.CENTER_LEFT);
 
         VBox textoNombre = new VBox(-2);
-        Label dpto = new Label(t.getDepartamento());
-        dpto.getStyleClass().add("subtitulo");
+        Label dpto = new Label(t.getDepartamento().toUpperCase());
+        dpto.setStyle("-fx-text-fill: #f97316; -fx-font-weight: bold; -fx-font-size: 10px;");
         Label nombre = new Label(t.getNombre());
-        nombre.getStyleClass().add("nombre");
+        nombre.getStyleClass().add("label-titulo-meta"); // Reutilizamos tu clase de título visible
         textoNombre.getChildren().addAll(dpto, nombre);
 
         Region spacer = new Region();
@@ -154,42 +149,36 @@ public class SupervisorEquipoController {
         cb.setSelected(t.isSeleccionado());
         cb.selectedProperty().addListener((o, ov, nv) -> t.setSeleccionado(nv));
 
-        cabecera.getChildren().addAll(textoNombre, spacer, cb);
+        filaCabecera.getChildren().addAll(textoNombre, spacer, cb);
 
-        // 2. Fila de Datos (⭐ + Valoración + Nota) colocada debajo del nombre
-        HBox filaDatos = new HBox(10);
-        filaDatos.getStyleClass().add("contenedor-datos");
+        // 2. Fila inferior: Inputs de datos
+        HBox filaDatos = new HBox(15);
+        filaDatos.setAlignment(Pos.CENTER_LEFT);
+
+        Label iconStar = new Label("⭐");
 
         TextField txtVal = new TextField(String.valueOf(t.getValoracion()));
+        txtVal.setPrefWidth(55);
         txtVal.getStyleClass().add("valoracion-input");
         txtVal.textProperty().addListener((o, ov, nv) -> {
             try { t.setValoracion(Double.parseDouble(nv)); } catch(Exception ignored){}
         });
 
         TextField txtNota = new TextField(t.getNota());
+        txtNota.setPromptText("Añadir observaciones sobre el rendimiento...");
         txtNota.getStyleClass().add("nota-box");
-        txtNota.setPromptText("Escribir nota...");
-        HBox.setHgrow(txtNota, Priority.ALWAYS);
+        HBox.setHgrow(txtNota, Priority.ALWAYS); // Expandir la nota a todo el ancho disponible
         txtNota.textProperty().addListener((o, ov, nv) -> t.setNota(nv));
 
-        filaDatos.getChildren().addAll(new Label("⭐"), txtVal, txtNota);
+        filaDatos.getChildren().addAll(iconStar, txtVal, txtNota);
 
-        // Construir Tarjeta
-        tarjeta.getChildren().addAll(cabecera, filaDatos);
+        tarjeta.getChildren().addAll(filaCabecera, filaDatos);
 
-        // Hover effect dinámico
-        tarjeta.setOnMouseEntered(e -> animateCard(tarjeta, 1.02, 0.2));
-        tarjeta.setOnMouseExited(e -> animateCard(tarjeta, 1.0, 0.2));
+        // Efecto hover
+        tarjeta.setOnMouseEntered(e -> tarjeta.setStyle("-fx-border-color: #3b82f6; -fx-background-color: #f8fafc;"));
+        tarjeta.setOnMouseExited(e -> tarjeta.setStyle(""));
 
         return tarjeta;
-    }
-
-    private void animateCard(Node node, double scale, double duration) {
-        ScaleTransition st = new ScaleTransition(Duration.seconds(duration), node);
-        st.setToX(scale);
-        st.setToY(scale);
-        st.setInterpolator(Interpolator.EASE_BOTH);
-        st.play();
     }
 
     private void refrescarPanelLateral() {
@@ -205,18 +194,13 @@ public class SupervisorEquipoController {
 
     private void togglePanelLateral() {
         boolean visible = panelLateral.isVisible();
-        TranslateTransition tt = new TranslateTransition(Duration.millis(350), panelLateral);
-        tt.setInterpolator(Interpolator.EASE_OUT);
-
         if (visible) {
-            tt.setToX(panelLateral.getWidth() + 50); // Sale de la pantalla
-            tt.setOnFinished(e -> panelLateral.setVisible(false));
+            panelLateral.setVisible(false);
+            panelLateral.setManaged(false);
         } else {
             panelLateral.setVisible(true);
-            tt.setFromX(panelLateral.getWidth() + 50);
-            tt.setToX(0);
+            panelLateral.setManaged(true);
         }
-        tt.play();
     }
 
     private void mostrarModalAñadir() {
@@ -240,7 +224,7 @@ public class SupervisorEquipoController {
                     dao.insertarTrabajador(n.getText(), d.getValue(), Double.parseDouble(v.getText()), nt.getText());
                     cargarTrabajadores();
                 } catch (Exception ex) {
-                    mostrar("Error", "Datos inválidos. Revisa la valoración numérica.");
+                    mostrar("Error", "Datos inválidos.");
                 }
             }
         });
@@ -259,18 +243,15 @@ public class SupervisorEquipoController {
 
         for (TrabajadorSeleccion t : listaActual) {
             if (t.getValoracion() != t.getValoracionOriginal() || !t.getNota().equals(t.getNotaOriginal())) {
-                dao.guardarHistorial(t.getId(), idSupervisor, t.getValoracionOriginal(), t.getValoracion(), t.getNotaOriginal(), t.getNota());
                 dao.actualizarValoracionYNota(t.getId(), t.getValoracion(), t.getNota());
-                t.setValoracionOriginal(t.getValoracion());
-                t.setNotaOriginal(t.getNota());
             }
         }
-        mostrar("Éxito", "Gestión de equipo actualizada correctamente.");
+        mostrar("Éxito", "Gestión de equipo actualizada.");
     }
 
     private void volver() {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/vistas/Login.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/vistas/SupervisorHub.fxml"));
             Stage stage = (Stage) btnVolver.getScene().getWindow();
             stage.setScene(new Scene(root));
         } catch (Exception e) { e.printStackTrace(); }

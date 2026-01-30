@@ -10,68 +10,39 @@
             styleClass="data-background"
             prefWidth="1300" prefHeight="750">
 
-    <!-- HEADER SUPERIOR -->
-    <HBox spacing="20"
-          alignment="CENTER_LEFT"
-          AnchorPane.topAnchor="20"
-          AnchorPane.leftAnchor="30"
-          AnchorPane.rightAnchor="30">
-
-        <!-- TÍTULO -->
+    <HBox spacing="20" alignment="CENTER_LEFT"
+          AnchorPane.topAnchor="20" AnchorPane.leftAnchor="30" AnchorPane.rightAnchor="30">
         <Label text="Gestión del Equipo" styleClass="titulo-visual"/>
-
         <Region HBox.hgrow="ALWAYS"/>
-
-        <!-- BUSCADOR -->
-        <TextField fx:id="txtBuscar" promptText="Buscar trabajador..." prefWidth="220"/>
-
-        <!-- COMBO + ACCIONES -->
-        <ComboBox fx:id="comboDepartamento" prefWidth="220" styleClass="combo-box"/>
-        <Button fx:id="btnCargar" text="Cargar" styleClass="button"/>
+        <TextField fx:id="txtBuscar" promptText="Buscar trabajador..." prefWidth="220" styleClass="text-field-moderno"/>
+        <ComboBox fx:id="comboDepartamento" prefWidth="220" styleClass="combo-box-moderno"/>
+        <Button fx:id="btnCargar" text="Cargar" styleClass="button-primary"/>
         <Button fx:id="btnAñadir" text="Añadir" styleClass="button-primary"/>
         <Button fx:id="btnTogglePanel" text="Panel" styleClass="button-ghost"/>
     </HBox>
 
-    <!-- CONTENIDO CENTRAL: SPLITPANE -->
-    <SplitPane orientation="HORIZONTAL"
-               AnchorPane.topAnchor="80"
-               AnchorPane.leftAnchor="30"
-               AnchorPane.rightAnchor="30"
-               AnchorPane.bottomAnchor="80">
+    <SplitPane orientation="HORIZONTAL" dividerPositions="0.75"
+               AnchorPane.topAnchor="80" AnchorPane.leftAnchor="30"
+               AnchorPane.rightAnchor="30" AnchorPane.bottomAnchor="80">
 
-        <!-- LADO IZQUIERDO: GRID DE TARJETAS -->
-        <ScrollPane fitToWidth="true" styleClass="scroll-area">
-            <GridPane fx:id="gridTrabajadores"
-                      hgap="25" vgap="25"
-                      styleClass="grid-container"
-                      alignment="TOP_LEFT"/>
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;">
+            <VBox fx:id="vboxTrabajadores" spacing="15" alignment="TOP_CENTER">
+                <padding>
+                    <Insets top="15" right="20" bottom="15" left="15"/>
+                </padding>
+            </VBox>
         </ScrollPane>
 
-        <!-- LADO DERECHO: PANEL LATERAL GESTIÓN -->
-        <VBox fx:id="panelLateral"
-              spacing="10"
-              styleClass="panel-lateral">
-
+        <VBox fx:id="panelLateral" spacing="10" styleClass="panel-lateral">
             <Label text="Gestión de trabajadores" styleClass="panel-titulo"/>
-
-            <Label text="Trabajadores del departamento:" styleClass="panel-subtitulo"/>
-
-            <ListView fx:id="listaTrabajadoresPanel" styleClass="list-view"/>
-
-            <Button fx:id="btnEliminarSeleccionado" text="Eliminar seleccionado" styleClass="button-danger"/>
-
+            <ListView fx:id="listaTrabajadoresPanel" VBox.vgrow="ALWAYS" styleClass="list-view-moderna"/>
+            <Button fx:id="btnEliminarSeleccionado" text="Eliminar seleccionado" styleClass="button-danger" maxWidth="Infinity"/>
         </VBox>
-
     </SplitPane>
 
-    <!-- FOOTER -->
-    <HBox spacing="16"
-          alignment="CENTER_RIGHT"
-          AnchorPane.bottomAnchor="24"
-          AnchorPane.rightAnchor="30">
-
+    <HBox spacing="16" alignment="CENTER_RIGHT"
+          AnchorPane.bottomAnchor="24" AnchorPane.rightAnchor="30">
         <Button fx:id="btnGuardar" text="Guardar cambios" styleClass="button-primary"/>
         <Button fx:id="btnVolver" text="⏻ Salir" styleClass="button-ghost"/>
     </HBox>
-
 </AnchorPane>
