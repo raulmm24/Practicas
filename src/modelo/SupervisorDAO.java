@@ -40,13 +40,13 @@ public class SupervisorDAO {
         if (conn == null) return lista;
 
         String sql =
-                "SELECT t.id_empleado AS id, t.nombre, d.nombre AS departamento, " +
+                "SELECT t.id_trabajador AS id, t.nombre, d.nombre AS departamento, " +
                         "IFNULL(v.valoracion, 0) AS valoracion, " +
                         "IFNULL(v.nota_trabajador, '') AS nota, " +
                         "IFNULL(t.id_supervisor, 0) AS supervisor " +
                         "FROM trabajador t " +
                         "JOIN departamento d ON t.departamento = d.id_dpto " +
-                        "LEFT JOIN valoracion v ON t.id_empleado = v.id_trabajador " +
+                        "LEFT JOIN valoracion v ON t.id_trabajador = v.id_trabajador " +
                         "WHERE d.nombre = ?";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -71,12 +71,11 @@ public class SupervisorDAO {
         return lista;
     }
 
-
     // 3. Asignar equipo a supervisor por nombre de departamento
     public void asignarEquipo(int idSupervisor, List<Integer> trabajadores, String nombreDepartamento) {
         if (conn == null) return;
 
-        String sql = "UPDATE trabajador SET id_supervisor = ? WHERE id_empleado = ? AND departamento = " +
+        String sql = "UPDATE trabajador SET id_supervisor = ? WHERE id_trabajador = ? AND departamento = " +
                 "(SELECT id_dpto FROM departamento WHERE nombre = ?)";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -129,5 +128,86 @@ public class SupervisorDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    // ============================================================
+    // 6. INSERTAR TRABAJADOR (NUEVO MÉTODO)
+    // ============================================================
+    public void insertarTrabajador(String nombre, String departamento, double valoracion, String nota) {
+        if (conn == null) return;
+
+        String sql = "INSERT INTO trabajador (nombre, departamento) VALUES (?, ?)";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            // Insertar trabajador
+            ps.setString(1, nombre);
+            ps.setInt(2, obtenerIdDepartamento(departamento));
+            ps.executeUpdate();
+
+            // Obtener ID generado
+            ResultSet rs = ps.getGeneratedKeys();
+            int idTrabajador = 0;
+            if (rs.next()) idTrabajador = rs.getInt(1);
+
+            // Insertar valoración inicial
+            String sqlValor = "INSERT INTO valoracion (id_trabajador, valoracion, nota_trabajador) VALUES (?, ?, ?)";
+            try (PreparedStatement ps2 = conn.prepareStatement(sqlValor)) {
+                ps2.setInt(1, idTrabajador);
+                ps2.setDouble(2, valoracion);
+                ps2.setString(3, nota);
+                ps2.executeUpdate();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // ============================================================
+    // 7. ELIMINAR TRABAJADOR (NUEVO MÉTODO)
+    // ============================================================
+    public void eliminarTrabajador(int idTrabajador) {
+        if (conn == null) return;
+
+        try {
+            // 1. Borrar valoraciones
+            try (PreparedStatement ps = conn.prepareStatement("DELETE FROM valoracion WHERE id_trabajador = ?")) {
+                ps.setInt(1, idTrabajador);
+                ps.executeUpdate();
+            }
+
+            // 2. Borrar historial
+            try (PreparedStatement ps = conn.prepareStatement("DELETE FROM historial_valoracion WHERE id_trabajador = ?")) {
+                ps.setInt(1, idTrabajador);
+                ps.executeUpdate();
+            }
+
+            // 3. Borrar trabajador
+            try (PreparedStatement ps = conn.prepareStatement("DELETE FROM trabajador WHERE id_trabajador = ?")) {
+                ps.setInt(1, idTrabajador);
+                ps.executeUpdate();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // ============================================================
+    // 8. Obtener ID de departamento por nombre
+    // ============================================================
+    private int obtenerIdDepartamento(String nombre) {
+        String sql = "SELECT id_dpto FROM departamento WHERE nombre = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, nombre);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt("id_dpto");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return 0;
     }
 }

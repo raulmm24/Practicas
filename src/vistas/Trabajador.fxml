@@ -1,43 +1,32 @@
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TextField?>
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Label?>
+<AnchorPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
             fx:controller="controladores.TrabajadorController"
-            stylesheets="@../estilo/estilo.css"
-            styleClass="data-background"
-            prefWidth="900" prefHeight="600">
+            stylesheets="@../estilo/trabajador.css"
+            styleClass="data-background" prefWidth="900" prefHeight="650">
 
-    <VBox spacing="20" alignment="TOP_CENTER"
-          styleClass="glass-panel"
-          AnchorPane.topAnchor="20"
-          AnchorPane.leftAnchor="20"
-          AnchorPane.rightAnchor="20">
+    <VBox spacing="25" alignment="TOP_CENTER" styleClass="glass-panel"
+          AnchorPane.topAnchor="30" AnchorPane.bottomAnchor="30"
+          AnchorPane.leftAnchor="50" AnchorPane.rightAnchor="50">
 
-        <Label text="Panel del Trabajador" styleClass="titulo"/>
+        <Label text="Perfil del Trabajador" styleClass="titulo"/>
 
-        <HBox spacing="10" alignment="CENTER">
-            <TextField fx:id="txtBuscar" promptText="Buscar trabajador..." prefWidth="250"/>
-            <Button fx:id="btnBuscar" text="Buscar"/>
+        <HBox spacing="15" alignment="CENTER">
+            <TextField fx:id="txtBuscar" promptText="Ingrese su nombre..." prefWidth="300"
+                       style="-fx-background-radius: 20; -fx-padding: 10;"/>
+            <Button fx:id="btnBuscar" text="Consultar" styleClass="button-primary"/>
         </HBox>
 
-        <TableView fx:id="tablaTrabajadores" prefWidth="800" prefHeight="350">
-            <columns>
-                <TableColumn fx:id="colId" text="ID" prefWidth="80"/>
-                <TableColumn fx:id="colNombre" text="Nombre" prefWidth="150"/>
-                <TableColumn fx:id="colDepartamento" text="Departamento" prefWidth="150"/>
-                <TableColumn fx:id="colValoracion" text="Valoración" prefWidth="100"/>
-                <TableColumn fx:id="colNota" text="Nota" prefWidth="200"/>
-            </columns>
-        </TableView>
+        <ScrollPane fx:id="scrollResultados" fitToWidth="true"
+                    style="-fx-background-color: transparent; -fx-background: transparent;">
+            <VBox fx:id="contenedorResultados" spacing="15" style="-fx-padding: 10;"/>
+        </ScrollPane>
 
-        <Button fx:id="btnVolver" text="Volver" prefWidth="150"/>
-
+        <Button fx:id="btnVolver" text="Volver al Inicio" prefWidth="200" styleClass="button-ghost"/>
     </VBox>
-
 </AnchorPane>

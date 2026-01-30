@@ -19,22 +19,22 @@ public class TrabajadorDAO {
         if (conn == null) return lista;
 
         String sql =
-                "SELECT t.id_empleado, t.nombre, d.nombre AS departamento, " +
+                "SELECT t.id_trabajador, t.nombre, d.nombre AS departamento, " +
                         "IFNULL(v.valoracion, 0) AS valoracion, " +
                         "IFNULL(v.nota_trabajador, '') AS nota, " +
                         "t.id_supervisor " +
                         "FROM trabajador t " +
                         "JOIN departamento d ON t.departamento = d.id_dpto " +
-                        "LEFT JOIN valoracion v ON t.id_empleado = v.id_trabajador";
+                        "LEFT JOIN valoracion v ON t.id_trabajador = v.id_trabajador";
 
         try (PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
                 lista.add(new Trabajador(
-                        rs.getInt("id_empleado"),
+                        rs.getInt("id_trabajador"),
                         rs.getString("nombre"),
-                        rs.getString("departamento"),   // ← ahora es el nombre real
+                        rs.getString("departamento"),
                         rs.getDouble("valoracion"),
                         rs.getString("nota"),
                         rs.getInt("id_supervisor")
@@ -55,13 +55,13 @@ public class TrabajadorDAO {
         if (conn == null) return lista;
 
         String sql =
-                "SELECT t.id_empleado, t.nombre, d.nombre AS departamento, " +
+                "SELECT t.id_trabajador, t.nombre, d.nombre AS departamento, " +
                         "IFNULL(v.valoracion, 0) AS valoracion, " +
                         "IFNULL(v.nota_trabajador, '') AS nota, " +
                         "t.id_supervisor " +
                         "FROM trabajador t " +
                         "JOIN departamento d ON t.departamento = d.id_dpto " +
-                        "LEFT JOIN valoracion v ON t.id_empleado = v.id_trabajador " +
+                        "LEFT JOIN valoracion v ON t.id_trabajador = v.id_trabajador " +
                         "WHERE t.nombre LIKE ?";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -70,7 +70,7 @@ public class TrabajadorDAO {
 
             while (rs.next()) {
                 lista.add(new Trabajador(
-                        rs.getInt("id_empleado"),
+                        rs.getInt("id_trabajador"),
                         rs.getString("nombre"),
                         rs.getString("departamento"),
                         rs.getDouble("valoracion"),
@@ -85,7 +85,6 @@ public class TrabajadorDAO {
 
         return lista;
     }
-
 
     // 3. Actualizar valoración y nota
     public void actualizarValoracionYNota(int idTrabajador, double valoracion, String nota) {

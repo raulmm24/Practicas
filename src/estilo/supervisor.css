@@ -1,0 +1,161 @@
+/* FONDO GENERAL TRASLÚCIDO */
+.data-background {
+    -fx-background-color: linear-gradient(to bottom right, #f8fafc, #cbd5e1, #e2e8f0);
+}
+
+/* TÍTULOS CON GRADIENTE */
+.titulo-visual {
+    -fx-font-size: 30px;
+    -fx-font-weight: 900;
+    -fx-text-fill: linear-gradient(to bottom right, #1e293b, #64748b);
+    -fx-letter-spacing: -0.5px;
+}
+
+/* CONTENEDOR DE CARTAS CON MÁRGENES TOTALES */
+.grid-container {
+    /* Margen: Arriba (30), Derecha (40), Abajo (30), Izquierda (40) */
+    -fx-padding: 30 40 30 40;
+    -fx-alignment: TOP_CENTER;
+    -fx-hgap: 25;
+    -fx-vgap: 25;
+}
+
+.scroll-area {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-border-color: transparent;
+}
+
+/* BUSCADOR Y COMBOBOX (ESTILO ORIGINAL MANTENIDO) */
+.text-field, .combo-box {
+    -fx-background-color: rgba(255, 255, 255, 0.4);
+    -fx-background-radius: 25;
+    -fx-border-color: rgba(255, 255, 255, 0.7);
+    -fx-border-radius: 25;
+    -fx-padding: 8 16;
+    -fx-text-fill: #1e293b;
+    -fx-transition: all 0.25s ease-in-out;
+}
+
+.text-field:focused, .combo-box:focused {
+    -fx-background-color: white;
+    -fx-border-color: #f97316;
+    -fx-effect: dropshadow(gaussian, rgba(249, 115, 22, 0.15), 12, 0, 0, 0);
+}
+
+/* TARJETAS ULTRA-COMPACTAS */
+.tarjeta-visual {
+    -fx-background-color: rgba(255, 255, 255, 0.5);
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+    -fx-border-color: rgba(255, 255, 255, 0.9);
+    -fx-border-width: 1;
+    -fx-padding: 15;
+    -fx-spacing: 10;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.03), 10, 0, 0, 4);
+}
+
+.tarjeta-visual:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.8);
+    -fx-border-color: #f97316;
+}
+
+/* INPUTS DENTRO DE TARJETA (VALORACIÓN Y NOTA DEBAJO) */
+.contenedor-datos {
+    -fx-spacing: 10;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.valoracion-input, .nota-box {
+    -fx-background-color: rgba(255, 255, 255, 0.6);
+    -fx-background-radius: 8;
+    -fx-border-color: #cbd5e1;
+    -fx-border-radius: 8;
+    -fx-padding: 5;
+}
+
+/* BOTONES (ESTILO ORIGINAL MANTENIDO) */
+.button-primary {
+    -fx-background-color: linear-gradient(to bottom right, #f97316, #ea580c);
+    -fx-text-fill: white;
+    -fx-font-weight: 900;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+    -fx-padding: 10 22;
+    -fx-effect: innershadow(three-pass-box, rgba(255,255,255,0.35), 4, 0, 0, 1);
+}
+
+.button, .button-ghost {
+    -fx-background-color: rgba(255, 255, 255, 0.35);
+    -fx-text-fill: #475569;
+    -fx-font-weight: 700;
+    -fx-background-radius: 10;
+    -fx-border-color: rgba(255, 255, 255, 0.6);
+    -fx-border-radius: 10;
+    -fx-padding: 8 16;
+    -fx-cursor: hand;
+}
+
+.button:hover, .button-ghost:hover {
+    -fx-background-color: white;
+    -fx-text-fill: #f97316;
+    -fx-border-color: #f97316;
+}
+
+/* PANEL LATERAL (ESTILO GLASS MODERNO) */
+.panel-lateral {
+    -fx-background-color: rgba(255, 255, 255, 0.15);
+    -fx-background-radius: 20 0 0 20;
+    -fx-border-color: transparent transparent transparent rgba(255, 255, 255, 0.4);
+    -fx-border-width: 0 0 0 1.5;
+    -fx-padding: 25;
+}
+
+.panel-titulo {
+    -fx-font-size: 18px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #1e293b;
+    -fx-padding: 0 0 10 0;
+    -fx-border-color: transparent transparent #f97316 transparent;
+    -fx-border-width: 0 0 3 0;
+}
+
+/* LISTA DE TRABAJADORES EN PANEL */
+.list-view {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 10 0;
+}
+
+.list-cell {
+    -fx-background-color: rgba(255, 255, 255, 0.3);
+    -fx-background-radius: 10;
+    -fx-text-fill: #334155;
+    -fx-padding: 10 15;
+    -fx-font-weight: 700;
+}
+
+.list-cell:filled:selected {
+    -fx-background-color: #f97316;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(249, 115, 22, 0.3), 10, 0, 0, 2);
+}
+
+/* BOTÓN ELIMINAR */
+.button-danger {
+    -fx-background-color: rgba(239, 68, 68, 0.1);
+    -fx-text-fill: #ef4444;
+    -fx-font-weight: 800;
+    -fx-border-color: rgba(239, 68, 68, 0.2);
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+}
+
+.button-danger:hover {
+    -fx-background-color: #ef4444;
+    -fx-text-fill: white;
+}
+
+/* TEXTOS DE TARJETA */
+.nombre { -fx-font-size: 17px; -fx-font-weight: 800; -fx-text-fill: #1e293b; }
+.subtitulo { -fx-font-size: 10px; -fx-font-weight: 900; -fx-text-fill: #f97316; -fx-text-transform: uppercase; }

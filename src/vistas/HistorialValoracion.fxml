@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -14,7 +13,8 @@
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="controladores.HistorialValoracionController"
-            stylesheets="@../estilo/estilo.css"
+            stylesheets="@../estilo/historial.css"
+            styleClass="data-background"
             prefWidth="1100" prefHeight="650">
 
     <VBox spacing="25"
@@ -31,12 +31,9 @@
             <ComboBox fx:id="comboTrabajadores"
                       promptText="Seleccionar trabajador..."
                       prefWidth="250"
-                      styleClass="combo-estilado"/>
+                      styleClass="combo-box"/>
 
-            <Button fx:id="btnBuscar"
-                    text="Buscar"
-                    prefWidth="120"
-                    styleClass="button"/>
+            <Button fx:id="btnBuscar" text="Buscar" prefWidth="120" styleClass="button"/>
         </HBox>
 
         <!-- BLOQUE PRINCIPAL: 3 COLUMNAS -->
@@ -76,7 +73,7 @@
                 <ComboBox fx:id="comboFechas"
                           promptText="Seleccionar fecha..."
                           prefWidth="250"
-                          styleClass="combo-estilado"/>
+                          styleClass="combo-box"/>
             </VBox>
         </HBox>
 
@@ -87,10 +84,7 @@
 
         <!-- BOTÓN SALIR -->
         <HBox alignment="CENTER">
-            <Button fx:id="btnVolver"
-                    text="⏻ Salir"
-                    prefWidth="150"
-                    styleClass="button"/>
+            <Button fx:id="btnVolver" text="⏻ Salir" prefWidth="150" styleClass="button"/>
         </HBox>
 
     </VBox>

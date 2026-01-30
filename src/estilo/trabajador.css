@@ -1,0 +1,90 @@
+/* FONDO Y PANEL CENTRAL */
+.data-background {
+    -fx-background-color: linear-gradient(to bottom right, #f0f4f8, #d9e2ec, #bcccdc);
+}
+
+.glass-panel {
+    -fx-background-color: rgba(255, 255, 255, 0.3);
+    -fx-background-radius: 25;
+    -fx-border-color: rgba(255, 255, 255, 0.5);
+    -fx-border-width: 1.5;
+    -fx-padding: 30;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 20, 0, 0, 10);
+}
+
+/* BOTONES VANGUARDISTAS */
+.button-primary {
+    -fx-background-color: linear-gradient(to bottom right, #f97316, #ea580c);
+    -fx-text-fill: white;
+    -fx-font-weight: 900;
+    -fx-background-radius: 20;
+    -fx-padding: 10 25;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(234, 88, 12, 0.3), 10, 0, 0, 5);
+}
+
+.button-primary:hover {
+    -fx-background-color: linear-gradient(to bottom right, #fb923c, #f97316);
+    -fx-effect: dropshadow(three-pass-box, rgba(234, 88, 12, 0.5), 15, 0, 0, 8);
+}
+
+.button-ghost {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-text-fill: #475569;
+    -fx-font-weight: 700;
+    -fx-background-radius: 20;
+    -fx-border-color: rgba(71, 85, 105, 0.3);
+    -fx-border-width: 1.5;
+    -fx-border-radius: 20;
+    -fx-padding: 10 25;
+}
+
+.button-ghost:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.5);
+    -fx-border-color: #f97316;
+}
+
+/* LA CARTA DEL TRABAJADOR (Ajuste de Margen y Aire) */
+.card-trabajador {
+    -fx-background-color: white;
+    -fx-background-radius: 20;
+
+    /* ESPACIADO INTERNO: Aire entre el borde y el texto */
+    -fx-padding: 30 35 30 35;
+
+    /* ESPACIADO EXTERNO: Margen en todos los lados para que no se pegue a nada */
+    -fx-margin: 20;
+
+    -fx-spacing: 20;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 15, 0, 0, 8);
+
+    /* Tamaño optimizado para que se vea bien en cualquier resolución */
+    -fx-min-width: 580;
+    -fx-max-width: 750;
+    -fx-alignment: TOP_LEFT;
+}
+
+/* Ajuste adicional para el contenedor que guarda las cartas */
+#contenedorResultados {
+    -fx-padding: 20 40 40 40; /* Margen general de la zona de resultados */
+    -fx-spacing: 25;           /* Espacio vertical entre una carta y otra */
+}
+
+.badge-valoracion {
+    -fx-background-color: linear-gradient(to right, #f97316, #ea580c);
+    -fx-text-fill: white;
+    -fx-font-weight: 900;
+    -fx-padding: 8 18;
+    -fx-background-radius: 25;
+}
+
+.nota-text {
+    -fx-font-size: 13px;
+    -fx-text-fill: #475569;
+    -fx-background-color: #f8fafc;
+    -fx-background-radius: 12;
+    -fx-padding: 15;
+    -fx-border-color: #e2e8f0;
+    -fx-border-width: 1;
+    -fx-border-radius: 12;
+}

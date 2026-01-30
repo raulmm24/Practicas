@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.HBox?>
@@ -6,10 +7,12 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
+
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="controladores.CoordinadorController"
-            stylesheets="@../estilo/estilo.css"
+            stylesheets="@../estilo/historial.css"
+            styleClass="data-background"
             prefWidth="900" prefHeight="600">
 
     <VBox spacing="20" alignment="TOP_CENTER"
@@ -21,12 +24,12 @@
         <Label text="Panel del Coordinador" styleClass="titulo"/>
 
         <HBox spacing="10" alignment="CENTER">
-            <TextField fx:id="txtBuscar" promptText="Buscar trabajador..." prefWidth="250"/>
-            <Button fx:id="btnBuscar" text="Buscar"/>
-            <Button fx:id="btnActualizar" text="Actualizar"/>
+            <TextField fx:id="txtBuscar" promptText="Buscar trabajador..." prefWidth="250" styleClass="text-field"/>
+            <Button fx:id="btnBuscar" text="Buscar" styleClass="button"/>
+            <Button fx:id="btnActualizar" text="Actualizar" styleClass="button"/>
         </HBox>
 
-        <TableView fx:id="tablaCoordinador" prefWidth="800" prefHeight="350">
+        <TableView fx:id="tablaCoordinador" prefWidth="800" prefHeight="350" styleClass="table-view">
             <columns>
                 <TableColumn fx:id="colNombre" text="Nombre" prefWidth="200"/>
                 <TableColumn fx:id="colDepartamento" text="Departamento" prefWidth="200"/>
@@ -36,8 +39,8 @@
         </TableView>
 
         <HBox spacing="20" alignment="CENTER">
-            <Button fx:id="btnAsignar" text="Asignar Tarea" prefWidth="200"/>
-            <Button fx:id="btnVolver" text="Volver" prefWidth="150"/>
+            <Button fx:id="btnAsignar" text="Asignar Tarea" prefWidth="200" styleClass="button-primary"/>
+            <Button fx:id="btnVolver" text="Volver" prefWidth="150" styleClass="button-ghost"/>
         </HBox>
 
     </VBox>
