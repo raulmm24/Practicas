@@ -125,3 +125,99 @@
 .btn-delete:hover {
     -fx-background-color: #fecaca;
 }
+/* Añade esto a tu hub.css para mejorar el desplegable interno */
+
+.combo-box .cell {
+    -fx-text-fill: #0f172a;
+    -fx-background-color: white;
+}
+
+.combo-box .cell:hover {
+    -fx-background-color: #f1f5f9;
+}
+
+/* Redondear las esquinas de la lista que se abre */
+.combo-box-popup .list-view {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: #e2e8f0;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);
+}
+
+/* Estilo para las tarjetas cuando pasas el ratón (cursor de mano) */
+.card-objetivo {
+    -fx-cursor: hand;
+}
+.combo-box {
+    -fx-background-color: white;
+    -fx-border-color: #e2e8f0;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-padding: 6 12; /* Aumentado un poco para que el icono respire */
+    -fx-font-size: 14px;
+    -fx-text-fill: #0f172a;
+}
+
+/* Estilo para los iconos dentro de la lista */
+.combo-box .list-cell {
+    -fx-padding: 8 12;
+    -fx-text-fill: #0f172a;
+}
+/* Estilo para las tablas dentro de las tarjetas */
+.modern-table {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-border-color: #e2e8f0;
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+}
+
+.modern-table .column-header-background {
+    -fx-background-color: #f8fafc; /* Gris muy claro para la cabecera */
+    -fx-background-radius: 10 10 0 0;
+}
+
+.modern-table .column-header {
+    -fx-background-color: transparent;
+    -fx-size: 40;
+}
+
+.modern-table .column-header .label {
+    -fx-text-fill: #475569;
+    -fx-font-weight: bold;
+}
+
+.modern-table .table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: transparent transparent #f1f5f9 transparent; /* Línea divisoria suave */
+}
+
+.modern-table .table-row-cell:filled:hover {
+    -fx-background-color: #f1f5f9;
+}
+
+/* Scrollbars minimalistas */
+.modern-table .virtual-flow .scroll-bar:vertical,
+.modern-table .virtual-flow .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+}
+.item-card {
+    -fx-background-color: white;
+    -fx-padding: 15;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 2);
+    -fx-border-color: #f1f5f9;
+    -fx-border-radius: 12;
+}
+
+.item-card:hover {
+    -fx-border-color: #3b82f6; /* Azul sutil al pasar el mouse */
+    -fx-cursor: hand;
+}
+
+.subtitulo-limpio {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #334155;
+}

@@ -7,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ComboBox;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -17,11 +18,47 @@ public class SupervisorHubController {
 
     @FXML private VBox cardEquipo;
     @FXML private VBox cardObjetivos;
+    @FXML private ComboBox<String> comboDepartamentos;
 
     @FXML
     private void initialize() {
         configurarHover(cardEquipo);
         configurarHover(cardObjetivos);
+
+        if (comboDepartamentos != null) {
+            comboDepartamentos.getSelectionModel().selectedItemProperty().addListener((obs, viejo, nuevo) -> {
+                if (nuevo != null) {
+                    try {
+                        irADetalleDepartamento(nuevo);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+    }
+
+    private void irADetalleDepartamento(String seleccion) throws Exception {
+
+        String nombreLimpio = seleccion
+                .replaceAll("[^\\p{L}\\sáéíóúÁÉÍÓÚñÑ]", "")
+                .trim();
+
+        URL url = getClass().getResource("/vistas/DetalleDepartamento.fxml");
+        if (url == null) {
+            System.err.println("No se encontró DetalleDepartamento.fxml");
+            return;
+        }
+
+        FXMLLoader loader = new FXMLLoader(url);
+        Parent root = loader.load();
+
+        DetalleDeptoController controller = loader.getController();
+        controller.initData(nombreLimpio);
+
+        Stage stage = (Stage) comboDepartamentos.getScene().getWindow();
+        stage.setScene(new Scene(root));
+        stage.show();
     }
 
     private void configurarHover(VBox card) {
@@ -57,10 +94,8 @@ public class SupervisorHubController {
 
     private void cambiarEscena(String ruta, Node nodoOrigen) throws Exception {
         URL url = getClass().getResource(ruta);
-        if (url == null) {
-            System.err.println("No se encontró la vista: " + ruta);
-            return;
-        }
+        if (url == null) return;
+
         Parent root = FXMLLoader.load(url);
         Stage stage = (Stage) nodoOrigen.getScene().getWindow();
         stage.setScene(new Scene(root));

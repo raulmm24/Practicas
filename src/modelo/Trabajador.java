@@ -4,13 +4,14 @@ import javafx.beans.property.*;
 
 public class Trabajador {
 
-    private IntegerProperty id;
-    private StringProperty nombre;
-    private StringProperty departamento;
-    private DoubleProperty valoracion;
-    private StringProperty nota;
-    private IntegerProperty idSupervisor;
+    private final IntegerProperty id;
+    private final StringProperty nombre;
+    private final StringProperty departamento;
+    private final DoubleProperty valoracion;
+    private final StringProperty nota;
+    private final IntegerProperty idSupervisor;
 
+    // Constructor completo
     public Trabajador(int id, String nombre, String departamento,
                       double valoracion, String nota, Integer idSupervisor) {
 
@@ -19,10 +20,11 @@ public class Trabajador {
         this.departamento = new SimpleStringProperty(departamento);
         this.valoracion = new SimpleDoubleProperty(valoracion);
         this.nota = new SimpleStringProperty(nota);
+        // Manejo de nulos para el ID del supervisor
         this.idSupervisor = new SimpleIntegerProperty(idSupervisor == null ? 0 : idSupervisor);
     }
 
-    // GETTERS
+    // --- GETTERS (Importantes para que JavaFX lea los datos) ---
     public int getId() { return id.get(); }
     public String getNombre() { return nombre.get(); }
     public String getDepartamento() { return departamento.get(); }
@@ -30,7 +32,7 @@ public class Trabajador {
     public String getNota() { return nota.get(); }
     public int getIdSupervisor() { return idSupervisor.get(); }
 
-    // SETTERS
+    // --- SETTERS ---
     public void setId(int id) { this.id.set(id); }
     public void setNombre(String nombre) { this.nombre.set(nombre); }
     public void setDepartamento(String departamento) { this.departamento.set(departamento); }
@@ -38,7 +40,7 @@ public class Trabajador {
     public void setNota(String nota) { this.nota.set(nota); }
     public void setIdSupervisor(int idSupervisor) { this.idSupervisor.set(idSupervisor); }
 
-    // PROPERTIES
+    // --- PROPERTIES (Necesarios para el CellValueFactory de la TableView) ---
     public IntegerProperty idProperty() { return id; }
     public StringProperty nombreProperty() { return nombre; }
     public StringProperty departamentoProperty() { return departamento; }

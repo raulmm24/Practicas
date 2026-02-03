@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<StackPane prefHeight="650.0" prefWidth="950.0"
+           styleClass="data-background"
+           stylesheets="/estilo/hub.css"
+           xmlns="http://javafx.com/javafx/8"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="controladores.DetalleDeptoController">
+
+    <BorderPane>
+
+        <!-- TOP -->
+        <top>
+            <VBox spacing="15">
+                <BorderPane.margin>
+                    <Insets top="30" left="50" right="50" bottom="20"/>
+                </BorderPane.margin>
+
+                <Button onAction="#volverAlHub" styleClass="button-ghost" text="← Volver al Panel" />
+
+                <VBox spacing="5">
+                    <Label fx:id="lblTituloDepto" styleClass="titulo" text="Gestión de Departamento" />
+                    <Label text="Visualización detallada de rendimiento y metas"
+                           style="-fx-text-fill: #64748b; -fx-font-size: 14;"/>
+                </VBox>
+            </VBox>
+        </top>
+
+        <!-- CENTER -->
+        <center>
+            <HBox spacing="30" alignment="CENTER">
+                <padding>
+                    <Insets left="40" right="40" bottom="40"/>
+                </padding>
+
+                <!-- PANEL: EQUIPO DE TRABAJO -->
+                <VBox spacing="10" styleClass="glass-panel" HBox.hgrow="ALWAYS">
+                    <Label text="👤 Equipo de Trabajo" styleClass="subtitulo-limpio"/>
+
+                    <ScrollPane fitToWidth="true"
+                                style="-fx-background-color: transparent; -fx-background: transparent;">
+                        <content>
+                            <VBox fx:id="contenedorTrabajadores" spacing="12"/>
+                        </content>
+                    </ScrollPane>
+                </VBox>
+
+                <!-- PANEL: METAS Y OBJETIVOS -->
+                <VBox spacing="10" prefWidth="350" styleClass="glass-panel">
+                    <Label text="🎯 Metas y Objetivos" styleClass="subtitulo-limpio"/>
+
+                    <ScrollPane fitToWidth="true"
+                                style="-fx-background-color: transparent; -fx-background: transparent;">
+                        <content>
+                            <VBox fx:id="contenedorObjetivos" spacing="12"/>
+                        </content>
+                    </ScrollPane>
+                </VBox>
+
+            </HBox>
+        </center>
+
+    </BorderPane>
+</StackPane>
